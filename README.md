@@ -9,7 +9,7 @@
 
 This tutorial is an introduction to
 [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) - a generic
-enabler which is used to persist context data into third-party databases
+enabler which is used to persist context data into third-party databases  using [Apache NIFI](https://nifi.apache.org)
 creating a historical view of the context. The tutorial activates the IoT
 sensors connected in the
 [previous tutorial](https://github.com/Fiware/tutorials.IoT-Agent) and persists
