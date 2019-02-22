@@ -324,7 +324,7 @@ find the template icon and drag and drop it inside the Draco user space.
 At this point, a popup should be displayed with a list of all the templates available.
 Please select the template MONGO-TUTORIAL.
 
-![Draco-template1](images/mongo-tutorial-template.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mongo-tutorial-template.png)
 
 Select all the processors (press shift and click on every processor) and start them
 by clicking on the start button. Now, you can see that the status icon of each processor turned from red to green.
@@ -744,34 +744,36 @@ The `draco` container is listening on two ports:
     listening for notifications from the Orion context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors.
 
-First, go to your browser and open Draco using this URL http://localhost:9090/nifi
+First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI,
 find the template icon and drag and drop it inside the Draco user space.
 At this point, a popup should be displayed with a list of all the templates available.
 Please select the template POSTGRESQL-TUTORIAL.
 
-![Draco-template1](images/postgres-tutorial-template.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/postgres-tutorial-template.png)
 
 Before starting the processors, you need to set your PostgreSQL password and enable the DBCConnectionPool controller.
 For doing that please follow the instructions:
 
  1. Do right click on any part of the Draco GUI user space, and then  click on configure.
-![Draco-step1](./images/step1.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step1.png)
 
  2. Go to the Controller Services Tab, at this point a list of controllers should be displayed, locate the DBCConnectionPool controller.
 
  3. Click on the configuration button of the "DBCPConnectionPool"
-![Draco-step2](./images/step2.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step2.png)
 
  4. Go to the controller Properties tab  and
 put "password" in the password field, then apply the changes.
-![Draco-step3](./images/controller-postgresql.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/controller-postgresql.png)
 
  5. Enable the processor by clicking on the thunder icon and then click on enable,
 then close the controller configuration page.
-![Draco-step4](./images/step4.png)
-![Draco-step5](./images/step5.png)
+
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step4.png)
+
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step5.png)
 
  6. Select all the processors (press shift and click on every processor) and start them
 by clicking on the start button. Now, you can see that the status icon of each processor turned from red to green.
@@ -1140,27 +1142,28 @@ find the template icon and drag and drop it inside the Draco user space.
 At this point, a popup should be displayed with a list of all the templates available.
 Please select the template MYSQL-TUTORIAL.
 
-![Draco-template1](images/draco-template1.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/draco-template1.png)
 
 Before starting the processors, you need to set your MySQL password and enable the DBCConnectionPool controller.
 For doing that please follow the instructions:
 
  1. Do right click on any part of the Draco GUI user space, and then  click on configure.
-![Draco-step1](./images/step1.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step1.png)
 
  2. Go to the Controller Services Tab, at this point a list of controllers should be displayed, locate the DBCConnectionPool controller.
 
  3. Click on the configuration button of the "DBCPConnectionPool"
-![Draco-step2](./images/step2.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step2.png)
 
  4. Go to the controller Properties tab  and
 put "123" in the password field, then apply the changes.
-![Draco-step3](./images/step3.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step3.png)
 
  5. Enable the processor by clicking on the thunder icon and then click on enable,
 then close the controller configuration page.
-![Draco-step4](./images/step4.png)
-![Draco-step5](./images/step5.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step4.png)
+
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step5.png)
 
  6. Select all the processors (press shift and click on every processor) and start them
 by clicking on the start button. Now, you can see that the status icon of each processor turned from red to green.
@@ -1503,7 +1506,7 @@ find the template icon and drag and drop it inside the Draco user space.
 At this point, a popup should be displayed with a list of all the templates available.
 Please select the template MULTIPLE-SINKS-TUTORIAL.
 
-![Draco-template1](images/multiple-tutorial-template.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/multiple-tutorial-template.png)
 
 Now repeat the process for setting the password in the controller "DBCPConnectionPool" each connection MySQL and PostgreSQL
 
