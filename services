@@ -1,0 +1,97 @@
+#!/bin/bash
+#
+#  Command Line Interface to start all services associated with the Getting-Started Tutorial
+#
+#  For this tutorial the commands are merely a convenience script to run docker-compose
+#
+
+set -e
+
+loadData () {
+	./import-data
+	./provision-devices
+	echo ""
+}
+
+
+stoppingContainers () {
+	echo "Stopping containers"
+	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+}
+
+if (( $# != 1 )); then
+    echo "Illegal number of parameters"
+    echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
+    exit 1
+fi
+
+command="$1"
+case "${command}" in
+	"help")
+        echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
+        ;;
+    "multiple")
+		stoppingContainers
+		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mTutorial\033[0m and \033[1;30mMongoDB\033[0m, \033[1;30mPostgreSQL\033[0m and \033[1;30mMySQL\033[0m databases."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to Mongo-DB, PostgeSQL and MySQL"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		loadData
+		echo ""
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		;;
+	 "mongodb")
+		stoppingContainers
+		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mTutorial\033[0m and a \033[1;30mMongoDB\033[0m database."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to Mongo-DB only"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		loadData
+		echo ""
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		;;
+    "postgres")
+		stoppingContainers
+		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mTutorial\033[0m and \033[1;30mMongoDB\033[0m and \033[1;30mPostgreSQL\033[0m databases."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to PostgreSQL only"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		loadData
+		echo ""
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		;;
+	"mysql")
+		stoppingContainers
+		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mTutorial\033[0m and \033[1;30mMongoDB\033[0m and \033[1;30mMySQL\033[0m databases."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to MySQL only"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		loadData
+		echo ""
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		;;
+	"stop")
+		stoppingContainers
+		;;
+	"create")
+		echo "Pulling Docker images"
+		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
+		;;
+	*)
+		echo "Command not Found."
+		echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
+		exit 127;
+		;;
+esac
