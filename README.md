@@ -278,7 +278,7 @@ to configure since we are already using a MongoDB instance to hold data related
 to the Orion Context Broker and the IoT Agent. The MongoDB instance is listening
 on the standard `27017` port and the overall architecture can be seen below:
 
-![](images/mongo-draco-tutorial.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mongo-draco-tutorial.png)
 
 ## MongoDB - Database Server Configuration
 
@@ -677,7 +677,7 @@ server - the default Docker image for this data can be used. The PostgreSQL
 instance is listening on the standard `5432` port and the overall architecture
 can be seen below:
 
-![](images/postgres-draco-tutorial.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/postgres-draco-tutorial.png)
 
 We now have a system with two databases, since the MongoDB container is still
 required to hold data related to the Orion Context Broker and the IoT Agent.
@@ -1067,7 +1067,7 @@ need an additional container which hosts the MySQL server, once again the
 default Docker image for this data can be used. The MySQL instance is listening
 on the standard `3306` port and the overall architecture can be seen below:
 
-![](images/mysql-draco-tutorial.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mysql-draco-tutorial.png)
 
 Once again we have a system with two databases, since the MongoDB container is
 still required to hold data related to the Orion Context Broker and the IoT
@@ -1456,7 +1456,7 @@ It is also possible to configure Draco to populate multiple databases
 simultaneously. We can combine the architecture from the three previous examples
 and configure Draco to store data in multiple sinks.
 
-![](images/multiple-draco-tutorial.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/multiple-draco-tutorial.png)
 
 We now have a system with three databases, PostgreSQL and MySQL for data
 persistence and MongoDB for both data persistence and holding data related to
