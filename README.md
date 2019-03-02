@@ -271,7 +271,7 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-First, go to your browser and open Draco using this URL http://localhost:9090/nifi
+First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
@@ -1043,7 +1043,7 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-First, go to your browser and open Draco using this URL http://localhost:9090/nifi
+First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
@@ -1389,7 +1389,7 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-First, go to your browser and open Draco using this URL http://localhost:9090/nifi
+First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
