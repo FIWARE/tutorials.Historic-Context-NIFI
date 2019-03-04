@@ -9,7 +9,7 @@
 This tutorial is an introduction to [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) - a generic enabler
 which is used to persist context data into third-party databases using [Apache NIFI](https://nifi.apache.org) creating a
 historical view of the context. The tutorial activates the IoT sensors connected in the
-[previous tutorial](https://github.com/Fiware/tutorials.IoT-Agent) and persists measurements from those sensors into a
+[previous tutorial](https://github.com/FIWARE/tutorials.IoT-Agent) and persists measurements from those sensors into a
 database for further analysis.
 
 The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as
@@ -108,7 +108,7 @@ notifications must be set up to only pass the minimal data required as necessary
 
 For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context
 broker. Details of the architecture and protocol used can be found in the
-[IoT Sensors tutorial](https://github.com/Fiware/tutorials.IoT-Sensors). The state of each device can be seen on the
+[IoT Sensors tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors). The state of each device can be seen on the
 UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/device-monitor.png)
@@ -116,7 +116,7 @@ UltraLight device monitor web page found at: `http://localhost:3000/device/monit
 # Architecture
 
 This application builds on the components and dummy IoT devices created in
-[previous tutorials](https://github.com/Fiware/tutorials.IoT-Agent/). It will make use of three FIWARE components - the
+[previous tutorials](https://github.com/FIWARE/tutorials.IoT-Agent/). It will make use of three FIWARE components - the
 [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
 [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) and introduce the
 [Draco Generic Enabler](https://fiware-draco.readthedocs.io/en/latest/) for persisting context data to a database.
@@ -151,7 +151,7 @@ Therefore the overall architecture will consist of the following elements:
         -   Display store information and allow users to interact with the dummy IoT devices
         -   Show which products can be bought at each store
         -   Allow users to "buy" products and reduce the stock count.
-    -   A webserver acting as set of [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using the
+    -   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors) using the
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         protocol running over HTTP.
     -   The **Context Provider NGSI** proxy is not used in this tutorial. It does the following:
@@ -177,7 +177,7 @@ technology which allows to different components isolated into their respective e
 -   To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
 
 **Docker Compose** is a tool for defining and running multi-container Docker applications. A series of
-[YAML files](https://github.com/Fiware/tutorials.Historic-Context-NIFI/tree/master/docker-compose) are used configure
+[YAML files](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/tree/master/docker-compose) are used configure
 the required services for the application. This means all container services can be brought up in a single command.
 Docker Compose is installed by default as part of Docker for Windows and Docker for Mac, however Linux users will need
 to follow the instructions found [here](https://docs.docker.com/compose/install/)
@@ -210,7 +210,7 @@ cd tutorials.Historic-Context-NIFI
 ```
 
 Thereafter, all services can be initialized from the command-line by running the
-[services](https://github.com/Fiware/tutorials.Historic-Context-NIFI/blob/master/services) Bash script provided within
+[services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/master/services) Bash script provided within
 the repository:
 
 ```console
