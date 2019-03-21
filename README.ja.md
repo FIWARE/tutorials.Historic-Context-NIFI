@@ -19,7 +19,7 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 [Postman documentation](https://fiware.github.io/tutorials.Historic-Context-NIFI/)
 も利用できます。
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9658043920d9be43914a)
 
 ## コンテンツ
 
@@ -378,14 +378,14 @@ HTTP リクエストを送信することでステータスを確認できます
 別のポートでリッスンしているためです。
 
 #### :one: リクエスト :
- 
+
 ```console
 curl -X GET \
   'http://localhost:9090/nifi-api/system-diagnostics'
 ```
 
 #### レスポンス :
- 
+
 レスポンスは次のようになります :
 
 ```json
@@ -554,7 +554,7 @@ curl -X GET \
 が正しくないか、サブスクリプションが間違った `fiware-service-path`
 または `fiware-service` ヘッダで作成されたことを示します。
 
-`lastNotification` は最近のタイムスタンプであるべきです - 
+`lastNotification` は最近のタイムスタンプであるべきです -
 そうでない場合、デバイスは定期的にデータを送信していません。
 **Smart Door** のロックを解除して **Smart Lamp** をオンにするのを
 忘れないでください。
@@ -599,7 +599,7 @@ show dbs
 ```
 
 #### 結果 :
- 
+
 ```
 admin          0.000GB
 iotagentul     0.000GB
@@ -638,7 +638,7 @@ show collections
 ```
 
 #### 結果 :
- 
+
 ```
 switched to db sth_openiot
 
@@ -753,7 +753,7 @@ postgres-db:
         - "POSTGRES_DB=postgres"
 ```
 
-`postgres-db` コンテナは、単一ポートで待機しています : 
+`postgres-db` コンテナは、単一ポートで待機しています :
 
 -   ポート `5432` は PostgreSQL サーバのデフォルト・ポートです。
     公開されているので、必要に応じて `pgAdmin4` ツールを実行して
@@ -792,7 +792,7 @@ draco:
         test: curl --fail -s http://localhost:9090/nifi-api/system-diagnostics || exit 1
 ```
 
-`draco` コンテナは、2つのポートでリッスンしています : 
+`draco` コンテナは、2つのポートでリッスンしています :
 
 -   Draco の サブスクリプション・ポート -` 5050` は、サービスが
     Orion Context Broker からの通知をリッスンするポートです
@@ -814,7 +814,7 @@ NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
 コントローラを有効にする必要があります。そのためには、次の指示に従ってください :
 
 1.  Draco GUI ユーザ・スペースの任意の部分を右クリックしてから
-    "configure" をクリックします 
+    "configure" をクリックします
     ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step1.png)
 
 2.  "Controller Services" タブに移動します。この時点で、コントローラのリストが
@@ -824,7 +824,7 @@ NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
     ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step2.png)
 
 4.  "controller Properties" タブに移動し、パフワード・フィールドに "password"
-    と入力してから変更を適用します 
+    と入力してから変更を適用します
     ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/controller-postgresql.png)
 
 5.  雷のアイコンをクリックしてプロセッサを有効にしてから "enable"
@@ -986,7 +986,7 @@ curl -iX POST \
 
 コマンドラインから PostgreSQL データを読み込むには、`postgres`
 クライアントにアクセスする必要があります。これを行うには、次のように
-コネクション文字列を指定して `postgresql-client` 
+コネクション文字列を指定して `postgresql-client`
 イメージの対話型インスタンスを実行してコマンドライン・プロンプトを取得します :
 
 ```console
@@ -1179,7 +1179,7 @@ mysql-db:
 > [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 > を適用することでこのリスクを回避できます。
 
-`mysql-db` コンテナは、単一ポートで待機しています : 
+`mysql-db` コンテナは、単一ポートで待機しています :
 
 -   ポート `3306` は MySQL サーバのデフォルトポートです。必要に応じて
     他のデータベース・ツールを実行してデータを表示することもできます
@@ -1210,7 +1210,7 @@ draco:
         test: curl --fail -s http://localhost:9090/nifi-api/system-diagnostics || exit 1
 ```
 
-`draco` コンテナは、2つのポートでリッスンしています : 
+`draco` コンテナは、2つのポートでリッスンしています :
 
 -   Draco の サブスクリプション・ポート -` 5050` は、サービスが
     Orion Context Broker からの通知をリッスンするポートです
@@ -1246,7 +1246,7 @@ NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
     ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step3.png)
 
 5.  雷のアイコンをクリックしてプロセッサを有効にしてから "enable" をクリックし、
-    コントローラの "configuration" ページを閉じます 
+    コントローラの "configuration" ページを閉じます
     ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step4.png)
 
 ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/step5.png)
@@ -1606,7 +1606,7 @@ draco:
         test: curl --fail -s http://localhost:9090/nifi-api/system-diagnostics || exit 1
 ```
 
-`draco` コンテナは、2つのポートでリッスンしています : 
+`draco` コンテナは、2つのポートでリッスンしています :
 
 -   Draco の サブスクリプション・ポート -` 5050` は、サービスが
     Orion Context Broker からの通知をリッスンするポートです
