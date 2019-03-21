@@ -20,6 +20,8 @@ waitForDraco(){
 	  echo -e "Draco HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics'` " (waiting for 200)"
 	  sleep 10
 	done
+	echo ""
+	echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
 }
 
 
@@ -49,9 +51,9 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		loadData
-		waitForDraco
 		echo ""
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		waitForDraco
 		;;
 	 "mongodb")
 		stoppingContainers
@@ -63,9 +65,9 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		loadData
-		waitForDraco
 		echo ""
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		waitForDraco
 		;;
     "postgres")
 		stoppingContainers
@@ -77,9 +79,9 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		loadData
-		waitForDraco
 		echo ""
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		waitForDraco
 		;;
 	"mysql")
 		stoppingContainers
@@ -91,9 +93,9 @@ case "${command}" in
 		echo ""
 		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
 		loadData
-		waitForDraco
 		echo ""
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		waitForDraco
 		;;
 	"stop")
 		stoppingContainers

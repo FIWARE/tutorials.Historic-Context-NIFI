@@ -6,11 +6,11 @@
 [![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
 <br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
-This tutorial is an introduction to [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) - a generic enabler
-which is used to persist context data into third-party databases using [Apache NIFI](https://nifi.apache.org) creating a
-historical view of the context. The tutorial activates the IoT sensors connected in the
-[previous tutorial](https://github.com/FIWARE/tutorials.IoT-Agent) and persists measurements from those sensors into a
-database for further analysis.
+This tutorial is an introduction to [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) - an alternative
+generic enabler which is used to persist context data into third-party databases using
+[Apache NIFI](https://nifi.apache.org) creating a historical view of the context. The in the same manner asthe
+[previous tutorial](https://github.com/FIWARE/tutorials.Historic-Context-Flume), activates the dummy IoT sensors
+persists measurements from those sensors into a database for further analysis.
 
 The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as
 [Postman documentation](https://fiware.github.io/tutorials.Historic-Context-NIFI/)
@@ -24,7 +24,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 <details>
 <summary><strong>Details</strong></summary>
 
--   [Data Persistence](#data-persistence)
+-   [Data Persistence](#data-persistence-using-apache-nifi)
 -   [Architecture](#architecture)
 -   [Prerequisites](#prerequisites)
     -   [Docker and Docker Compose](#docker-and-docker-compose)
@@ -71,40 +71,30 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 
 </details>
 
-# Data Persistence
+# Data Persistence using Apache NIFI
 
 > "Plots within plots, but all roads lead down the dragon’s gullet."
 >
 > — George R.R. Martin (A Dance With Dragons)
 
-Previous tutorials have introduced a set of IoT Sensors (providing measurements of the state of the real world), and two
-FIWARE Components - the **Orion Context Broker** and an **IoT Agent**. This tutorial will introduce a new data
-persistence component - FIWARE **Draco**.
+[FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) is an alternative generic enabler which is able to
+persist historical context data to a series of databases. Like **Cygnus** - **Draco** is able subscribe to chnages of
+state from the **Orion Context Broker** and provide a funnel to process that data before persisting to a data sink.
 
-The system so far has been built up to handle the current context, in other words it holds the data entities defining
-the state of the real-world objects at a given moment in time.
+As mentioned previously, persisting historical context data is useful for big data analysis or discovering trends or
+removing outliers. Which tool you use to do this will depend on your needs, and unlike **Cygnus** **Draco** offers a
+graphical interface to set up and monitor the procedure.
 
-From this definition you can see - context is only interested in the **current** state of the system It is not the
-responsibility of any of the existing components to report on the historical state of the system, the context is based
-on the last measurement each sensor has sent to the context broker.
+A summary of the differences can be seen below:
 
-In order to do this, we will need to extend the existing architecture to persist changes of state into a database
-whenever the context is updated.
-
-Persisting historical context data is useful for big data analysis - it can be used to discover trends, or data can be
-sampled and aggregated to remove the influence of outlying data measurements. However within each Smart Solution, the
-significance of each entity type will differ and entities and attributes may need to be sampled at different rates.
-
-Since the business requirements for using context data differ from application to application, there is no one standard
-use case for historical data persistence - each situation is unique - it is not the case that one size fits all.
-Therefore rather than overloading the context broker with the job of historical context data persistence, this role has
-been separated out into a separate, highly configurable component - **Draco**.
-
-As you would expect, **Draco**, as part of an Open Source platform, is technology agnostic regarding the database to be
-used for data persistence. The database you choose to use will depend upon your own business needs.
-
-However there is a cost to offering this flexibility - each part of the system must be separately configured and
-notifications must be set up to only pass the minimal data required as necessary.
+| Draco                                                                           | Cygnus                                                                           |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Offers an NGSI v2 interface for notifications                                   | Offers an NGSI v1 interface for notifications                                    |
+| configurable subscription endpoint, but defaults to `/v2/notify`                | subscription endpoint listens on `/notify`                                       |
+| listens on a single port                                                        | listens on separate ports for each input                                         |
+| Configured by a graphical interface                                             | Configured via config files                                                      |
+| Based on Apache NIFI                                                            | Based on Apache Flume                                                            |
+| **Draco** is docummented [here](https://fiware-draco.readthedocs.io/en/latest/) | **Cygnus** is documented [here](https://fiware-cygnus.readthedocs.io/en/latest/) |
 
 #### Device Monitor
 
@@ -273,7 +263,16 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
+
+## MongoDB - Start up
+
+To start the system with a **MongoDB** database only, run the following command:
+
+```console
+./services mongodb
+```
+
+Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
@@ -284,13 +283,6 @@ available. Please select the template MONGO-TUTORIAL.
 Select all the processors (press shift and click on every processor) and start them by clicking on the start button.
 Now, you can see that the status icon of each processor turned from red to green.
 
-## MongoDB - Start up
-
-To start the system with a **MongoDB** database only, run the following command:
-
-```console
-./services mongodb
-```
 
 ### Checking the Draco Service Health
 
@@ -672,7 +664,15 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors.
 
-First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
+## PostgreSQL - Start up
+
+To start the system with a **PostgreSQL** database run the following command:
+
+```console
+./services postgres
+```
+
+Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
@@ -705,13 +705,6 @@ For doing that please follow the instructions:
 6.  Select all the processors (press shift and click on every processor) and start them by clicking on the start button.
     Now, you can see that the status icon of each processor turned from red to green.
 
-## PostgreSQL - Start up
-
-To start the system with a **PostgreSQL** database run the following command:
-
-```console
-./services postgres
-```
 
 ### Checking the Draco Service Health
 
@@ -1045,7 +1038,17 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
+
+
+## MySQL - Start up
+
+To start the system with a **MySQL** database run the following command:
+
+```console
+./services mysql
+```
+
+Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
@@ -1075,14 +1078,6 @@ doing that please follow the instructions:
 
 6.  Select all the processors (press shift and click on every processor) and start them by clicking on the start button.
     Now, you can see that the status icon of each processor turned from red to green.
-
-## MySQL - Start up
-
-To start the system with a **MySQL** database run the following command:
-
-```console
-./services mysql
-```
 
 ### Checking the Draco Service Health
 
@@ -1358,14 +1353,6 @@ from the three previous examples and configure Draco to store data in multiple s
 We now have a system with three databases, PostgreSQL and MySQL for data persistence and MongoDB for both data
 persistence and holding data related to the Orion Context Broker and the IoT Agent.
 
-## Multi-Agent - Start up
-
-To start the system with **multiple** databases run the following command:
-
-```console
-./services multiple
-```
-
 ## Multi-Agent - Draco Configuration for Multiple Databases
 
 ```yaml
@@ -1391,7 +1378,16 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-First, go to your browser and open Draco using this URL `http://localhost:9090/nifi`
+
+## Multi-Agent - Start up
+
+To start the system with **multiple** databases run the following command:
+
+```console
+./services multiple
+```
+
+Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
 Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
