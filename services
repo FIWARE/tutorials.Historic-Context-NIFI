@@ -24,6 +24,12 @@ waitForDraco(){
 	echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
 }
 
+displayServices () {
+	echo ""
+	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
+	echo ""
+}
+
 
 stoppingContainers () {
 	echo "Stopping containers"
@@ -51,7 +57,7 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		waitForDraco
 		;;
@@ -65,7 +71,7 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		waitForDraco
 		;;
@@ -79,7 +85,7 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		waitForDraco
 		;;
@@ -93,7 +99,7 @@ case "${command}" in
 		echo ""
 		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		waitForDraco
 		;;
