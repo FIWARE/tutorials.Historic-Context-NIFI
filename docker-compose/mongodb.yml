@@ -1,17 +1,6 @@
 version: "3.5"
 services:
-  mongo-db:
-    image: mongo:3.6
-    hostname: mongo-db
-    container_name: db-mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - default
-    command: --bind_ip_all --smallfiles
-    volumes:
-      - mongo-db:/data
-
+  # Orion is the context broker
   orion:
     image: fiware/orion:2.2.0
     hostname: orion
@@ -28,6 +17,7 @@ services:
     healthcheck:
       test: curl --fail -s http://orion:1026/version || exit 1
 
+  # Draco is configured to write context data to Mongo-DB
   draco:
     image: ging/fiware-draco:1.1.0
     hostname: draco
@@ -46,6 +36,7 @@ services:
       test: curl --fail -s http://draco:9090/nifi-api/system-diagnostics || exit 1
       start_period: 1m
 
+  # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
     image: fiware/iotagent-ul:1.8.0
     hostname: iot-agent
@@ -74,6 +65,7 @@ services:
     healthcheck:
       test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
 
+  # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
     image: fiware/tutorials.context-provider
     hostname: tutorial
@@ -104,6 +96,21 @@ services:
       - "TWITTER_CONSUMER_SECRET=<ADD_YOUR_CONSUMER_SECRET>"
     healthcheck:
       test: curl --fail -s http://tutorial:3000/version || exit 1
+
+  # Database
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - default
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
 
 networks:
   default:
