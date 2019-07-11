@@ -19,7 +19,7 @@ services:
 
   # Draco is configured to write context data to MySQL
   draco:
-    image: ging/fiware-draco:1.1.0
+    image: ging/fiware-draco:1.2.0
     hostname: draco
     container_name: fiware-draco
     networks:
@@ -38,7 +38,7 @@ services:
 
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
-    image: fiware/iotagent-ul:1.8.0
+    image: fiware/iotagent-ul:1.9.0
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
