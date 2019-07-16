@@ -263,7 +263,6 @@ The `draco` container is listening on two ports:
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
 
-
 ## MongoDB - Start up
 
 To start the system with a **MongoDB** database only, run the following command:
@@ -282,7 +281,6 @@ available. Please select the template MONGO-TUTORIAL.
 
 Select all the processors (press shift and click on every processor) and start them by clicking on the start button.
 Now, you can see that the status icon of each processor turned from red to green.
-
 
 ### Checking the Draco Service Health
 
@@ -705,7 +703,6 @@ For doing that please follow the instructions:
 6.  Select all the processors (press shift and click on every processor) and start them by clicking on the start button.
     Now, you can see that the status icon of each processor turned from red to green.
 
-
 ### Checking the Draco Service Health
 
 Once Draco is running, you can check the status by making an HTTP request to the exposed draco port to
@@ -1037,8 +1034,6 @@ The `draco` container is listening on two ports:
 -   The Subscription Port for Draco - `5050` is where the service will be listening for notifications from the Orion
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
-
-
 
 ## MySQL - Start up
 
@@ -1377,7 +1372,6 @@ The `draco` container is listening on two ports:
 -   The Subscription Port for Draco - `5050` is where the service will be listening for notifications from the Orion
     context broker
 -   The Web interface for Draco - `9090` is exposed purely for configuring the processors
-
 
 ## Multi-Agent - Start up
 
