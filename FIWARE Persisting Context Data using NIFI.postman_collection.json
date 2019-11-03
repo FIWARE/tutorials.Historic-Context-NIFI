@@ -14,10 +14,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{draco}}/nifi-api/system-diagnostics",
 							"protocol": "http",
@@ -85,10 +81,6 @@
 								"value": "/"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
 							"protocol": "http",
@@ -165,10 +157,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{draco}}/nifi-api/system-diagnostics",
 							"protocol": "http",
@@ -236,10 +224,6 @@
 								"value": "/"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
 							"protocol": "http",
@@ -316,10 +300,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{draco}}/nifi-api/system-diagnostics",
 							"protocol": "http",
@@ -387,10 +367,6 @@
 								"value": "/"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
 							"protocol": "http",
@@ -467,10 +443,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{draco}}/v1/version",
 							"protocol": "http",
@@ -538,10 +510,6 @@
 								"value": "/"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
 							"protocol": "http",
@@ -608,16 +576,17 @@
 	],
 	"variable": [
 		{
-			"id": "da2f1e43-24ae-4f03-993c-cb72e15d2c2a",
+			"id": "ae13f117-12ed-42fa-babd-d465dbfdf57f",
 			"key": "orion",
 			"value": "localhost:1026",
 			"type": "string"
 		},
 		{
-			"id": "0877d7c8-8193-472f-998d-2f15472668bb",
+			"id": "209da7ff-3c70-4e87-a881-6165824232a8",
 			"key": "draco",
-			"value": "localhost:5080",
+			"value": "localhost:9090",
 			"type": "string"
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

@@ -17,21 +17,21 @@ services:
 
   # Draco is configured to write context data to Mongo-DB, PostgeSQL and MySQL
   draco:
-    image: ging/fiware-draco:1.2.0
+    image: ging/fiware-draco:${DRACO_VERSION}
     hostname: draco
     container_name: fiware-draco
     networks:
       - default
     environment:
-      - NIFI_WEB_HTTP_PORT=9090
+      - NIFI_WEB_HTTP_PORT=${DRACO_API_PORT}
     expose:
       - "5050"
-      - "9090"
+      - "${DRACO_API_PORT}"
     ports:
-      - "9090:9090"
+      - "${DRACO_API_PORT}:${DRACO_API_PORT}" # localhost:9090
       - "5050:5050"
     healthcheck:
-      test: curl --fail -s http://draco:9090/nifi-api/system-diagnostics || exit 1
+      test: curl --fail -s http://draco:${DRACO_API_PORT}/nifi-api/system-diagnostics || exit 1
       start_period: 1m
 
   # IoT-Agent is configured for the UltraLight Protocol
