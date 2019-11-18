@@ -195,7 +195,7 @@ Before you start you should ensure that you have obtained or built the necessary
 repository and create the necessary images by running the commands as shown:
 
 ```console
-git clone git@github.com:fiware/tutorials.Historic-Context-NIFI.git
+git clone https://github.com/fiware/tutorials.Historic-Context-NIFI.git
 cd tutorials.Historic-Context-NIFI
 
 ./services create
