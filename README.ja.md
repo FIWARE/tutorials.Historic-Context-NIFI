@@ -160,7 +160,7 @@ Orion Context Broker と IoT Agent の両方が
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し
         、Context Broker がコンテキスト・エンティティの状態を変更するための
-        [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
+        [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
         リクエストに変換します
 -   FIWARE Draco はコンテキストの変更をサブスクライブし、データベース
     (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
@@ -191,11 +191,11 @@ Orion Context Broker と IoT Agent の両方が
         セットとして機能する Web サーバ
     -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用
         しません。これは以下を行います :
-        -   [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使
+        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使
             用してリクエストを受信します
         -   独自の API を独自のフォーマットで使用して、公開されているデータ・ソ
             ースへのリクエストを行います
-        -   [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式
+        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式
             でコンテキスト・データを Orion Context Broker に返します
 
 要素間のすべての対話は HTTP リクエストによって開始されるため、
