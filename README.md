@@ -197,6 +197,7 @@ repository and create the necessary images by running the commands as shown:
 ```console
 git clone https://github.com/fiware/tutorials.Historic-Context-NIFI.git
 cd tutorials.Historic-Context-NIFI
+git checkout NGSI-v2
 
 ./services create
 ```

@@ -264,6 +264,7 @@ Linux ディストリビューションと同様のコマンドライン機能�
 ```console
 git clone https://github.com/fiware/tutorials.Historic-Context-NIFI.git
 cd tutorials.Historic-Context
+git checkout NGSI-v2
 
 ./services create
 ```
