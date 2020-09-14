@@ -204,7 +204,7 @@ git checkout NGSI-v2
 ```
 
 Thereafter, all services can be initialized from the command-line by running the
-[services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/master/services) Bash script provided within
+[services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/NGSI-v2/services) Bash script provided within
 the repository:
 
 ```console

@@ -271,7 +271,7 @@ git checkout NGSI-v2
 ```
 
 その後、リポジトリ内で提供される
-[services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/master/services)
+[services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/NGSI-v2/services)
 の Bash スクリプトを実行することによって、コマンドラインから
 すべてのサービスを初期化できます :
 
