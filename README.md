@@ -233,7 +233,7 @@ on the standard `27017` port and the overall architecture can be seen below:
 
 ```yaml
 mongo-db:
-    image: mongo:3.6
+    image: mongo:4.2
     hostname: mongo-db
     container_name: db-mongo
     ports:

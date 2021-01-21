@@ -308,7 +308,7 @@ MongoDB インスタンスは標準で `27017` ポートをリッスンしてお
 
 ```yaml
 mongo-db:
-    image: mongo:3.6
+    image: mongo:4.2
     hostname: mongo-db
     container_name: db-mongo
     ports:
