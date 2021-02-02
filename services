@@ -184,6 +184,9 @@ case "${command}" in
 	"stop")
 		stoppingContainers
 		;;
+	"start")
+		./services mongodb
+		;;
 	"create")
 		echo "Pulling Docker images"
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
