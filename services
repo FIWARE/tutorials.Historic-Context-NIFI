@@ -26,10 +26,10 @@ loadData () {
 
 waitForDraco(){
 	echo -e "⏳ Waiting for Draco to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics'` -eq 000 ]
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-draco` == "healthy" ]
 	do 
 	  echo -e "Draco HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics'` " (waiting for 200)"
-	  sleep 10
+	  sleep 15
 	done
 	echo ""
 	echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
