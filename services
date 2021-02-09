@@ -17,7 +17,6 @@ loadData () {
 	export CONTEXT_BROKER="$1" 
 	addDatabaseIndex
 	waitForContext
-	waitForOrion
 	docker run --rm -v $(pwd)/import-data:/import-data \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
@@ -43,19 +42,28 @@ waitForContext () {
 
 waitForDraco(){
 	echo -e "⏳ Waiting for Draco to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics'` -eq 000 ]
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-draco` == "healthy" ]
 	do 
 	  echo -e "Draco HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics'` " (waiting for 200)"
-	  sleep 10
+	  sleep 15
 	done
 	echo ""
 	echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
 }
 
+waitForMongo () {
+	echo -e "\n⏳ Waiting for \033[1mMongoDB\033[0m to be available\n"
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' db-mongo` == "healthy" ]
+	do 
+		sleep 1
+	done
+}
+
 waitForOrion () {
 	echo -e "\n⏳ Waiting for \033[1;34mOrion\033[0m to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://orion:1026/version'` -eq 000 ]
-	do 
+
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-orion` == "healthy" ]
+	do
 	  echo -e "Context Broker HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:1026/version'` " (waiting for 200)"
 	  sleep 1
 	done
@@ -63,7 +71,8 @@ waitForOrion () {
 
 waitForIoTAgent () {
 	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://iot-agent:4041/version'` -eq 000 ]
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
+
 	do 
 	  echo -e "IoT Agent HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version'` " (waiting for 200)"
 	  sleep 1
@@ -129,6 +138,9 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
 		loadData orion:1026
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -143,6 +155,9 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
 		loadData orion:1026
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -157,6 +172,9 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
 		loadData orion:1026
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -171,6 +189,9 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
 		loadData orion:1026
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -178,6 +199,9 @@ case "${command}" in
 		;;
 	"stop")
 		stoppingContainers
+		;;
+	"start")
+		./services mongodb
 		;;
 	"create")
 		echo "Pulling Docker images"
