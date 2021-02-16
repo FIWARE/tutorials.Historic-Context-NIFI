@@ -182,12 +182,15 @@ case "${command}" in
 		waitForDraco
 		;;
 	"stop")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		;;
 	"start")
+		export $(cat .env | grep "#" -v)
 		./services mongodb
 		;;
 	"create")
+		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
 		;;
