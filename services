@@ -246,12 +246,15 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
 		;;
 	"stop")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		;;
 	"start")
+		export $(cat .env | grep "#" -v)
 		./services mongodb
 		;;
 	"create")
+		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
 		;;
