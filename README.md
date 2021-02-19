@@ -1,5 +1,4 @@
-[![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/fiware.png)](https://www.fiware.org/developers)
-[![NGSI v2](https://img.shields.io/badge/NGSI-v2-5dc0cf.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
+# Data Persistence (NIFI)[<img src="https://img.shields.io/badge/NGSI-LD-d6604d.svg" width="90"  align="left" />]("https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf)[<img src="https://fiware.github.io/tutorials.CRUD-Operations/img/fiware.png" align="left" width="162">](https://www.fiware.org/)<br/>
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-NIFI.svg)](https://opensource.org/licenses/MIT)
@@ -90,7 +89,7 @@ A summary of the differences can be seen below:
 
 | Draco                                                                           | Cygnus                                                                           |
 | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Offers an NGSI v2 interface for notifications                                   | Offers an NGSI v1 interface for notifications                                    |
+| Offers an NGSI-LD interface for notifications                                   | Offers an NGSI v2 interface for notifications                                    |
 | configurable subscription endpoint, but defaults to `/v2/notify`                | subscription endpoint listens on `/notify`                                       |
 | listens on a single port                                                        | listens on separate ports for each input                                         |
 | Configured by a graphical interface                                             | Configured via config files                                                      |
@@ -99,12 +98,12 @@ A summary of the differences can be seen below:
 
 #### Device Monitor
 
-For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context
-broker. Details of the architecture and protocol used can be found in the
-[IoT Sensors tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2). The state of each device can be seen on the
-UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
+For the purpose of this tutorial, a series of dummy agricultural IoT devices have been created, which will be attached
+to the context broker. Details of the architecture and protocol used can be found in the
+[IoT Sensors tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-LD) The state of each device can be
+seen on the UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
 
-![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/device-monitor.png)
+![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/farm-devices.png)
 
 # Architecture
 
@@ -119,14 +118,16 @@ persisting our historical context data another database - either **MySQL** , **P
 
 Therefore the overall architecture will consist of the following elements:
 
--   Three **FIWARE Generic Enablers**:
-    -   The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests
-        using [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-    -   The FIWARE [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) which will
-        receive northbound measurements from the dummy IoT devices in
-        [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
-        format and convert them to [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) requests for the
-        context broker to alter the state of the context entities
+-   The **FIWARE Generic Enablers**:
+
+    -   The [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using
+        [NGSI-LD](https://forge.etsi.org/swagger/ui/?url=https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/spec/updated/full_api.json)
+    -   The FIWARE [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) which will
+        receive southbound requests using
+        [NGSI-LD](https://forge.etsi.org/swagger/ui/?url=https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/spec/updated/full_api.json)
+        and convert them to
+        [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        commands for the devices
     -   FIWARE [Draco](https://fiware-draco.readthedocs.io/en/latest/) which will subscribe to context changes and
         persist them into a database (**MySQL** , **PostgreSQL** or **MongoDB**)
 -   One, two or three of the following **Databases**:
@@ -147,11 +148,12 @@ Therefore the overall architecture will consist of the following elements:
     -   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using the
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         protocol running over HTTP.
-    -   The **Context Provider NGSI** proxy is not used in this tutorial. It does the following:
-        -   receive requests using [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-        -   makes requests to publicly available data sources using their own APIs in a proprietary format
-        -   returns context data back to the Orion Context Broker in
-            [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) format.
+-   The **Tutorial Application** does the following:
+    -   Offers static `@context` files defining the context entities within the system.
+    -   Acts as set of dummy [agricultural IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-LD)
+        using the
+        [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        protocol running over HTTP.
 
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run
 from exposed ports.
@@ -246,7 +248,7 @@ mongo-db:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: ging/fiware-draco:1.3.5
     container_name: draco
     depends_on:
         - mongo-db
@@ -353,18 +355,24 @@ The response will look similar to the following:
 ### Generating Context Data
 
 For the purpose of this tutorial, we must be monitoring a system where the context is periodically being updated. The
-dummy IoT Sensors can be used to do this. Open the device monitor page at `http://localhost:3000/device/monitor` and
-unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by selecting an appropriate the command from
-the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then be seen
-on the same page:
+dummy IoT Sensors can be used to do this.
 
-![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/door-open.gif)
+Details of various buildings around the farm can be found in the tutorial application. Open
+`http://localhost:3000/app/farm/urn:ngsi-ld:Building:farm001` to display a building with an associated filling sensor
+and thermostat.
+
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/fmis.png)
+
+Remove some hay from the barn, update the thermostat and open the device monitor page at
+`http://localhost:3000/device/monitor` and start a **Tractor** and switch on a **Smart Lamp**. This can be done by
+selecting an appropriate command from the drop down list and pressing the `send` button. The stream of measurements
+coming from the devices can then be seen on the same page.
 
 ### Subscribing to Context Changes
 
 Once a dynamic context system is up and running, we need to inform **Draco** of changes in context.
 
-This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+This is done by making a POST request to the `/v1/subscriptions` endpoint of the Orion Context Broker.
 
 -   The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to
     measurements from the attached IoT Sensors, since they had been provisioned using these settings
@@ -375,26 +383,21 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### :two: Request:
 
 ```console
-curl -iX POST \
-  'http://localhost:1026/v2/subscriptions' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "description": "Notify Draco of all context changes",
-  "subject": {
-    "entities": [
-      {
-        "idPattern": ".*"
-      }
-    ]
-  },
+curl -L -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+-H 'Content-Type: application/ld+json' \
+-H 'NGSILD-Tenant: openiot' \
+--data-raw '{
+  "description": "Notify me of all changes",
+  "type": "Subscription",
+  "entities" : [{"type" :"Device"}, {"type": "Tractor"}],
   "notification": {
-    "http": {
-      "url": "http://draco:5050/v2/notify"
+    "format": "normalized",
+    "endpoint": {
+      "uri": "http://draco:5050/v2/notify",
+      "accept": "application/json"
     }
   },
-  "throttling": 5
+   "@context": "http://context-provider:3000/data-models/ngsi-context.jsonld"
 }'
 ```
 
@@ -402,15 +405,14 @@ As you can see, the database used to persist context data has no impact on the d
 same for each database. The response will be **201 - Created**
 
 If a subscription has been created, you can check to see if it is firing by making a GET request to the
-`/v2/subscriptions` endpoint.
+`/ngsi-ld/v1/subscriptions/` endpoint.
 
 #### :three: Request:
 
 ```console
 curl -X GET \
-  'http://localhost:1026/v2/subscriptions/' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /'
+  'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+  -H 'NGSILD-Tenant: openiot'
 ```
 
 #### Response:
@@ -785,7 +787,7 @@ on the same page:
 
 Once a dynamic context system is up and running, we need to inform **Draco** of changes in context.
 
-This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+This is done by making a POST request to the `/v1/subscriptions/` endpoint of the Orion Context Broker.
 
 -   The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to
     measurements from the attached IoT Sensors, since they had been provisioned using these settings
@@ -795,26 +797,21 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### :five: Request:
 
 ```console
-curl -iX POST \
-  'http://localhost:1026/v2/subscriptions' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "description": "Notify Draco of all context changes",
-  "subject": {
-    "entities": [
-      {
-        "idPattern": ".*"
-      }
-    ]
-  },
+curl -L -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+-H 'Content-Type: application/ld+json' \
+-H 'NGSILD-Tenant: openiot' \
+--data-raw '{
+  "description": "Notify Draco of all device and tractor changes",
+  "type": "Subscription",
+  "entities" : [{"type" :"Device"}, {"type": "Tractor"}],
   "notification": {
-    "http": {
-      "url": "http://draco:5050/v2/notify"
+    "format": "normalized",
+    "endpoint": {
+      "uri": "http://draco:5050/v2/notify",
+      "accept": "application/json"
     }
   },
-  "throttling": 5
+   "@context": "http://context-provider:3000/data-models/ngsi-context.jsonld"
 }'
 ```
 
@@ -1156,7 +1153,7 @@ on the same page:
 
 Once a dynamic context system is up and running, we need to inform **Draco** of changes in context.
 
-This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+This is done by making a POST request to the `/v1/subscriptions` endpoint of the Orion Context Broker.
 
 -   The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to
     measurements from the attached IoT Sensors, since they had been provisioned using these settings
@@ -1166,26 +1163,21 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### :seven: Request:
 
 ```console
-curl -iX POST \
-  'http://localhost:1026/v2/subscriptions' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "description": "Notify Draco of all context changes",
-  "subject": {
-    "entities": [
-      {
-        "idPattern": ".*"
-      }
-    ]
-  },
+curl -L -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+-H 'Content-Type: application/ld+json' \
+-H 'NGSILD-Tenant: openiot' \
+--data-raw '{
+  "description": "Notify Draco of all device and tractor changes",
+  "type": "Subscription",
+  "entities" : [{"type" :"Device"}, {"type": "Tractor"}],
   "notification": {
-    "http": {
-      "url": "http://draco:5050/v2/notify"
+    "format": "normalized",
+    "endpoint": {
+      "uri": "http://draco:5050/v2/notify",
+      "accept": "application/json"
     }
   },
-  "throttling": 5
+   "@context": "http://context-provider:3000/data-models/ngsi-context.jsonld"
 }'
 ```
 
@@ -1477,7 +1469,7 @@ on the same page:
 
 Once a dynamic context system is up and running, we need to inform **Draco** of changes in context.
 
-This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+This is done by making a POST request to the `/v1/subscriptions` endpoint of the Orion Context Broker.
 
 -   The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to
     measurements from the attached IoT Sensors
@@ -1487,26 +1479,21 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### :nine: Request:
 
 ```console
-curl -iX POST \
-  'http://localhost:1026/v2/subscriptions' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "description": "Notify Draco of all context changes",
-  "subject": {
-    "entities": [
-      {
-        "idPattern": ".*"
-      }
-    ]
-  },
+curl -L -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+-H 'Content-Type: application/ld+json' \
+-H 'NGSILD-Tenant: openiot' \
+--data-raw '{
+  "description": "Notify Draco of all device and tractor changes",
+  "type": "Subscription",
+  "entities" : [{"type" :"Device"}, {"type": "Tractor"}],
   "notification": {
-    "http": {
-      "url": "http://draco:5050/v2/notify"
+    "format": "normalized",
+    "endpoint": {
+      "uri": "http://draco:5050/v2/notify",
+      "accept": "application/json"
     }
   },
-  "throttling": 5
+   "@context": "http://context-provider:3000/data-models/ngsi-context.jsonld"
 }'
 ```
 

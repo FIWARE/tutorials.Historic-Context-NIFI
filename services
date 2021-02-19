@@ -251,7 +251,7 @@ case "${command}" in
 		;;
 	"start")
 		export $(cat .env | grep "#" -v)
-		./services mongodb
+		./services postgres
 		;;
 	"create")
 		export $(cat .env | grep "#" -v)
