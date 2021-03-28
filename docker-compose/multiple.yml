@@ -26,11 +26,11 @@ services:
     environment:
       - NIFI_WEB_HTTP_PORT=${DRACO_API_PORT}
     expose:
-      - "5050"
+      - "${DRACO_SUBSCRIPTION_PORT}"
       - "${DRACO_API_PORT}"
     ports:
       - "${DRACO_API_PORT}:${DRACO_API_PORT}" # localhost:9090
-      - "5050:5050"
+      - "${DRACO_SUBSCRIPTION_PORT}:${DRACO_SUBSCRIPTION_PORT}"
     healthcheck:
       test: curl --fail -s http://draco:${DRACO_API_PORT}/nifi-api/system-diagnostics || exit 1
       start_period: 1m
@@ -163,7 +163,7 @@ networks:
   default:
     ipam:
       config:
-        - subnet: 172.18.100.0/24
+        - subnet: ${SUBNET}
 
 volumes:
   mongo-db: ~

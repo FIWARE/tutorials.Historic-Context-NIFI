@@ -7,7 +7,7 @@
 
 This tutorial is an introduction to [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) - an alternative
 generic enabler which is used to persist context data into third-party databases using
-[Apache NIFI](https://nifi.apache.org) creating a historical view of the context. The in the same manner asthe
+[Apache NIFI](https://nifi.apache.org) creating a historical view of the context. The in the same manner as the
 [previous tutorial](https://github.com/FIWARE/tutorials.Historic-Context-Flume), activates the dummy IoT sensors
 persists measurements from those sensors into a database for further analysis.
 
@@ -77,11 +77,11 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 > — George R.R. Martin (A Dance With Dragons)
 
 [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) is an alternative generic enabler which is able to
-persist historical context data to a series of databases. Like **Cygnus** - **Draco** is able subscribe to chnages of
-state from the **Orion Context Broker** and provide a funnel to process that data before persisting to a data sink.
+persist historical context data to a series of databases. Like **Cygnus** - **Draco** is able to subscribe to change
+of state from the **Orion Context Broker** and provide a funnel to process that data before persisting to a data sink.
 
 As mentioned previously, persisting historical context data is useful for big data analysis or discovering trends or
-removing outliers. Which tool you use to do this will depend on your needs, and unlike **Cygnus** **Draco** offers a
+removing outliers. Which tool you used to do this will depend on your needs, and unlike **Cygnus** **Draco** offers a
 graphical interface to set up and monitor the procedure.
 
 A summary of the differences can be seen below:
@@ -93,7 +93,7 @@ A summary of the differences can be seen below:
 | listens on a single port                                                        | listens on separate ports for each input                                         |
 | Configured by a graphical interface                                             | Configured via config files                                                      |
 | Based on Apache NIFI                                                            | Based on Apache Flume                                                            |
-| **Draco** is docummented [here](https://fiware-draco.readthedocs.io/en/latest/) | **Cygnus** is documented [here](https://fiware-cygnus.readthedocs.io/en/latest/) |
+| **Draco** is documented [here](https://fiware-draco.readthedocs.io/en/latest)   | **Cygnus** is documented [here](https://fiware-cygnus.readthedocs.io/en/latest)  |
 
 #### Device Monitor
 
@@ -111,11 +111,11 @@ This application builds on the components and dummy IoT devices created in
 [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
 [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) and introduce the
 [Draco Generic Enabler](https://fiware-draco.readthedocs.io/en/latest/) for persisting context data to a database.
-Additional databases are now involved - both the Orion Context Broker and the IoT Agent rely on
+Additional databases are now involved - both the Orion Context Broker, and the IoT Agent rely on
 [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold, and we will be
 persisting our historical context data another database - either **MySQL** , **PostgreSQL** or **MongoDB** database.
 
-Therefore the overall architecture will consist of the following elements:
+Therefore, the overall architecture will consist of the following elements:
 
 -   The **FIWARE Generic Enablers**:
 
@@ -199,7 +199,7 @@ repository and create the necessary images by running the commands as shown:
 ```console
 git clone https://github.com/fiware/tutorials.Historic-Context-NIFI.git
 cd tutorials.Historic-Context-NIFI
-git checkout NGSI-v2
+git checkout NGSI-LD
 
 ./services create
 ```
@@ -213,7 +213,7 @@ the repository:
 ```
 
 Where `<command>` will vary depending upon the databases we wish to activate. This command will also import seed data
-from the previous tutorials and provision the dummy IoT sensors on startup.
+from the previous tutorials and provision the dummy IoT sensors on the startup.
 
 > :information_source: **Note:** If you want to clean up and start over again you can do so with the following command:
 >
@@ -225,7 +225,7 @@ from the previous tutorials and provision the dummy IoT sensors on startup.
 
 Persisting historic context data using MongoDB technology is relatively simple to configure since we are already using a
 MongoDB instance to hold data related to the Orion Context Broker and the IoT Agent. The MongoDB instance is listening
-on the standard `27017` port and the overall architecture can be seen below:
+on the standard `27017` port, and the overall architecture can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mongo-draco-tutorial.png)
 
@@ -276,7 +276,7 @@ To start the system with a **MongoDB** database only, run the following command:
 
 Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
-Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
+Now go to the Components' toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
 available. Please select the template MONGO-TUTORIAL.
 
@@ -450,7 +450,7 @@ Within the `notification` section of the response, you can see several additiona
 of the subscription
 
 If the criteria of the subscription have been met, `timesSent` should be greater than `0`. A zero value would indicate
-that the `subject` of the subscription is incorrect or the subscription has created with the wrong `fiware-service-path`
+that the `subject` of the subscription is incorrect, or the subscription has created with the wrong `fiware-service-path`
 or `fiware-service` header
 
 The `lastNotification` should be a recent timestamp - if this is not the case, then the devices are not regularly
@@ -585,7 +585,7 @@ db["sth_/_Motion:001_Motion"].find({attrName: "count"},{_id: 0, attrType: 0, att
 { "recvTime" : ISODate("2018-06-12T10:48:28.218Z"), "attrValue" : "29" }
 ```
 
-To leave the MongoDB client and leave interactive mode, run the following:
+To leave the MongoDB client and leave the interactive mode, run the following:
 
 ```console
 exit
@@ -599,7 +599,7 @@ exit
 
 To persist historic context data into an alternative database such as **PostgreSQL**, we will need an additional
 container which hosts the PostgreSQL server - the default Docker image for this data can be used. The PostgreSQL
-instance is listening on the standard `5432` port and the overall architecture can be seen below:
+instance is listening on the standard `5432` port, and the overall architecture can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/postgres-draco-tutorial.png)
 
@@ -627,7 +627,7 @@ postgres-db:
 
 The `postgres-db` container is listening on a single port:
 
--   Port `5432` is the default port for a PostgreSQL server. It has been exposed so you can also run the `pgAdmin4` tool
+-   Port `5432` is the default port for a PostgreSQL server. It has been exposed, so you can also run the `pgAdmin4` tool
     to display database data if you wish
 
 The `postgres-db` container is driven by environment variables as shown:
@@ -675,7 +675,7 @@ To start the system with a **PostgreSQL** database run the following command:
 
 Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
-Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
+Now go to the Components' toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
 available. Please select the template POSTGRESQL-TUTORIAL.
 
@@ -851,7 +851,7 @@ To show the list of available databases, run the statement as shown:
 (3 rows)
 ```
 
-The result include two template databases `template0` and `template1` as well as the `postgres` database setup when the
+The result includes two template databases `template0` and `template1` as well as the `postgres` database setup when the
 docker container was started.
 
 To show the list of available schemas, run the statement as shown:
@@ -955,7 +955,7 @@ SELECT recvtime, attrvalue FROM openiot.motion_001_motion WHERE attrname ='count
 (10 rows)
 ```
 
-To leave the Postgres client and leave interactive mode, run the following:
+To leave the Postgres client and leave the interactive mode, run the following:
 
 ```console
 \q
@@ -967,7 +967,7 @@ You will then return to the command-line.
 
 Similarly, to persisting historic context data into **MySQL**, we will again need an additional container which hosts
 the MySQL server, once again the default Docker image for this data can be used. The MySQL instance is listening on the
-standard `3306` port and the overall architecture can be seen below:
+standard `3306` port, and the overall architecture can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mysql-draco-tutorial.png)
 
@@ -1000,7 +1000,7 @@ mysql-db:
 
 The `mysql-db` container is listening on a single port:
 
--   Port `3306` is the default port for a MySQL server. It has been exposed so you can also run other database tools to
+-   Port `3306` is the default port for a MySQL server. It has been exposed, so you can also run other database tools to
     display data if you wish
 
 The `mysql-db` container is driven by environment variables as shown:
@@ -1043,7 +1043,7 @@ To start the system with a **MySQL** database run the following command:
 
 Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
-Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
+Now go to the Components' toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
 available. Please select the template MYSQL-TUTORIAL.
 
@@ -1323,7 +1323,7 @@ SELECT recvtime, attrvalue FROM openiot.Motion_001_Motion WHERE attrname ='count
 10 rows in set (0.00 sec)
 ```
 
-To leave the MySQL client and leave interactive mode, run the following:
+To leave the MySQL client and leave the interactive mode, run the following:
 
 ```console
 \q
@@ -1376,7 +1376,7 @@ To start the system with **multiple** databases run the following command:
 
 Then go to your browser and open Draco using this URL `http://localhost:9090/nifi`
 
-Now go to the Components toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
+Now go to the Components' toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
 available. Please select the template MULTIPLE-SINKS-TUTORIAL.
 
