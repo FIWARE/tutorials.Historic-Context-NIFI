@@ -102,7 +102,7 @@ to the context broker. Details of the architecture and protocol used can be foun
 [IoT Sensors tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-LD) The state of each device can be
 seen on the UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
 
-![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/farm-devices.png)
+![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/farm-devices.png)  ERROR !!!
 
 # Architecture
 
@@ -191,6 +191,13 @@ necessary.
 We will start up our services using a simple Bash script. Windows users should download [cygwin](http://www.cygwin.com/)
 to provide a command-line functionality similar to a Linux distribution on Windows.
 
+### jq
+
+**jq** is a program to slice, filter and map the content of JSON data. This is a useful tool to extract certain
+information automatically from the HTTP responses. `jq` is written in C with no dependencies and can be use
+on nearly any platform. Prebuilt binaries are available for Linux, OS X and Windows. For more details how to install
+the tool you can go [here](https://stedolan.github.io/jq/download).
+
 # Start Up
 
 Before you start you should ensure that you have obtained or built the necessary Docker images locally. Please clone the
@@ -278,7 +285,7 @@ Then go to your browser and open Draco using this URL `http://localhost:9090/nif
 
 Now go to the Components' toolbar which is placed in the upper section of the NiFi GUI, find the template icon and drag
 and drop it inside the Draco user space. At this point, a popup should be displayed with a list of all the templates
-available. Please select the template MONGO-TUTORIAL.
+available. Please select the template `MONGO-TUTORIAL`.
 
 ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mongo-tutorial-template.png)
 
@@ -295,7 +302,7 @@ on another port.
 
 ```console
 curl -X GET \
-  'http://localhost:9090/nifi-api/system-diagnostics'
+  'http://localhost:9090/nifi-api/system-diagnostics' | jq .
 ```
 
 #### Response:
@@ -304,40 +311,49 @@ The response will look similar to the following:
 
 ```json
 {
-    "systemDiagnostics": {
-        "aggregateSnapshot": {
-            "totalNonHeap": "value",
-            "totalNonHeapBytes": 0,
-            "usedNonHeap": "value",
-            "usedNonHeapBytes": 0,
-            "freeNonHeap": "value",
-            "freeNonHeapBytes": 0,
-            "maxNonHeap": "value",
-            "maxNonHeapBytes": 0,
-            "nonHeapUtilization": "value",
-            "totalHeap": "value",
-            "totalHeapBytes": 0,
-            "usedHeap": "value",
-            "usedHeapBytes": 0,
-            "freeHeap": "value",
-            "freeHeapBytes": 0,
-            "maxHeap": "value",
-            "maxHeapBytes": 0,
-            "heapUtilization": "value",
-            "availableProcessors": 0,
-            "processorLoadAverage": 0.0,
-            "totalThreads": 0,
-            "daemonThreads": 0,
-            "uptime": "value",
-            "flowFileRepositoryStorageUsage": {},
-            "contentRepositoryStorageUsage": [{}],
-            "provenanceRepositoryStorageUsage": [{}],
-            "garbageCollection": [{}],
-            "statsLastRefreshed": "value",
-            "versionInfo": {}
-        },
-        "nodeSnapshots": [{}]
+  "systemDiagnostics": {
+    "aggregateSnapshot": {
+      "totalNonHeap": "156.88 MB",
+      "totalNonHeapBytes": 164495360,
+      "usedNonHeap": "147.32 MB",
+      "usedNonHeapBytes": 154480840,
+      "freeNonHeap": "9.55 MB",
+      "freeNonHeapBytes": 10014520,
+      "maxNonHeap": "-1 bytes",
+      "maxNonHeapBytes": -1,
+      "totalHeap": "476.5 MB",
+      "totalHeapBytes": 499646464,
+      "usedHeap": "228.62 MB",
+      "usedHeapBytes": 239727280,
+      "freeHeap": "247.88 MB",
+      "freeHeapBytes": 259919184,
+      "maxHeap": "476.5 MB",
+      "maxHeapBytes": 499646464,
+      "heapUtilization": "48.0%",
+      "availableProcessors": 3,
+      "processorLoadAverage": 2.44580078125,
+      "totalThreads": 63,
+      "daemonThreads": 26,
+      "uptime": "00:08:48.804",
+      "flowFileRepositoryStorageUsage": {},
+      "contentRepositoryStorageUsage": [{}],
+      "provenanceRepositoryStorageUsage": [{}],
+      "garbageCollection": [{},{}],
+      "statsLastRefreshed": "10:12:35 GMT",
+      "versionInfo": {
+        "niFiVersion": "1.13.0",
+        "javaVendor": "Oracle Corporation",
+        "javaVersion": "1.8.0_191",
+        "osName": "Linux",
+        "osVersion": "4.19.121-linuxkit",
+        "osArchitecture": "amd64",
+        "buildTag": "nifi-1.13.0-RC4",
+        "buildRevision": "3bc6a12",
+        "buildBranch": "UNKNOWN",
+        "buildTimestamp": "02/10/2021 19:15:44 GMT"
+      }
     }
+  }
 }
 ```
 
@@ -360,12 +376,20 @@ Details of various buildings around the farm can be found in the tutorial applic
 `http://localhost:3000/app/farm/urn:ngsi-ld:Building:farm001` to display a building with an associated filling sensor
 and thermostat.
 
-![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/fmis.png)
+![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/fmis.png) 
+
+<!--
+TODO: There is no image on that link
+-->
 
 Remove some hay from the barn, update the thermostat and open the device monitor page at
 `http://localhost:3000/device/monitor` and start a **Tractor** and switch on a **Smart Lamp**. This can be done by
 selecting an appropriate command from the drop down list and pressing the `send` button. The stream of measurements
-coming from the devices can then be seen on the same page.
+coming from the devices can then be seen on the same page. 
+
+<!--
+TODO: There is no lamp...
+-->
 
 ### Subscribing to Context Changes
 
@@ -382,7 +406,7 @@ This is done by making a POST request to the `/v1/subscriptions` endpoint of the
 #### :two: Request:
 
 ```console
-curl -L -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+curl -iL -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
 -H 'Content-Type: application/ld+json' \
 -H 'NGSILD-Tenant: openiot' \
 --data-raw '{
@@ -403,6 +427,14 @@ curl -L -X POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
 As you can see, the database used to persist context data has no impact on the details of the subscription. It is the
 same for each database. The response will be **201 - Created**
 
+```console
+HTTP/1.1 201 Created
+Connection: Keep-Alive
+Content-Length: 0
+Location: /ngsi-ld/v1/subscriptions/urn:ngsi-ld:Subscription:6061ae68dbbffa429d87d2f2
+Date: Mon, 29 Mar 2021 10:39:36 GMT
+```
+
 If a subscription has been created, you can check to see if it is firing by making a GET request to the
 `/ngsi-ld/v1/subscriptions/` endpoint.
 
@@ -411,55 +443,59 @@ If a subscription has been created, you can check to see if it is firing by maki
 ```console
 curl -X GET \
   'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
-  -H 'NGSILD-Tenant: openiot'
+  -H 'NGSILD-Tenant: openiot' | jq .
 ```
 
 #### Response:
 
 ```json
 [
-    {
-        "id": "5b39d7c866df40ed84284174",
-        "description": "Notify Draco of all context changes",
-        "status": "active",
-        "subject": {
-            "entities": [
-                {
-                    "idPattern": ".*"
-                }
-            ],
-            "condition": {
-                "attrs": []
-            }
-        },
-        "notification": {
-            "timesSent": 158,
-            "lastNotification": "2018-07-02T07:59:21.00Z",
-            "attrs": [],
-            "http": {
-                "url": "http://draco:5050/v2/notify"
-            },
-            "lastSuccess": "2018-07-02T07:59:21.00Z"
-        },
-        "throttling": 5
-    }
+  {
+    "id": "urn:ngsi-ld:Subscription:6061f9d4dbf7d48254fea6d2",
+    "type": "Subscription",
+    "description": "Notify me of all changes",
+    "entities": [
+      {
+        "type": "Device"
+      },
+      {
+        "type": "Tractor"
+      }
+    ],
+    "notification": {
+      "format": "normalized",
+      "endpoint": {
+        "uri": "http://draco:5050/v2/notify",
+        "accept": "application/json"
+      },
+      "timesSent": 25,
+      "lastNotification": "2021-03-29T16:01:41.665Z"
+    },
+    "@context": "http://context-provider:3009/data-models/ngsi-context.jsonld"
+  }
 ]
 ```
 
-Within the `notification` section of the response, you can see several additional `attributes` which describe the health
-of the subscription
+Within the `notification` section of the response, you can see several additional `attributes` which describe the
+health of the subscription.
 
-If the criteria of the subscription have been met, `timesSent` should be greater than `0`. A zero value would indicate
-that the `subject` of the subscription is incorrect, or the subscription has created with the wrong `fiware-service-path`
-or `fiware-service` header
+If the criteria of the subscription have been met, `timesSent` should be greater than `0`. A zero value would
+indicate that the `subject` of the subscription is incorrect, or the subscription has created with the wrong
+`fiware-service-path` or `fiware-service` header.
 
 The `lastNotification` should be a recent timestamp - if this is not the case, then the devices are not regularly
-sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**
+sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**.
 
-The `lastSuccess` should match the `lastNotification` date - if this is not the case then **Draco** is not receiving the
-subscription properly. Check that the hostname and port are correct.
+<!--
+TODO: It is not returned in the response ...
+
+The `lastSuccess` should match the `lastNotification` date - if this is not the case then **Draco** is not
+receiving the subscription properly. Check that the hostname and port are correct.
 
 Finally, check that the `status` of the subscription is `active` - an expired subscription will not fire.
+
+??? THE VALUES OF THE SUBSCRIPTION ARE NOT THE SAME
+-->
 
 ## MongoDB - Reading Data from a database
 
@@ -467,7 +503,7 @@ To read MongoDB data from the command-line, we will need access to the `mongo` t
 `mongo` image as shown to obtain a command-line prompt:
 
 ```console
-docker run -it --network fiware_default  --entrypoint /bin/bash mongo
+docker run -it --network fiware_default  --entrypoint /bin/bash mongo:4.2
 ```
 
 You can then log into to the running `mongo-db` database by using the command-line as shown:
@@ -490,11 +526,14 @@ show dbs
 
 ```
 admin          0.000GB
+config         0.000GB
 iotagentul     0.000GB
 local          0.000GB
 orion          0.000GB
 orion-openiot  0.000GB
-sth_openiot    0.000GB
+session        0.000GB
+sessions       0.000GB
+test           0.000GB
 ```
 
 The result include two databases `admin` and `local` which are set up by default by **MongoDB**, along with four
