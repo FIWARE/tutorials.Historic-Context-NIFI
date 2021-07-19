@@ -7,11 +7,14 @@
 
 set -e
 
-SCORPIO="http://scorpio:9090/scorpio/v1/info/"
-ORION="http://orion:1026/version"
-IOT_AGENT="http://iot-agent:4041/version"
-DRACO="http://draco:9090/nifi-api/system-diagnostics"
-CONTEXT="http://context-provider:3000/data-models/ngsi-context.jsonld"
+# Import variables
+source .env
+
+SCORPIO="http://scorpio:${SCORPIO_PORT}/scorpio/v1/info/"
+ORION="http://orion:${ORION_LD_PORT}/version"
+IOT_AGENT="http://iot-agent:${IOTA_NORTH_PORT}/version"
+DRACO="http://draco:${DRACO_API_PORT}/nifi-api/system-diagnostics"
+CONTEXT="http://context-provider:${TUTORIAL_APP_PORT}/data-models/ngsi-context.jsonld"
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
@@ -22,7 +25,7 @@ fi
 pause(){
 	printf " "
 	count="$1"
-	[ "$count" -gt 59 ] && printf "Waiting one minute " || printf " Waiting a few seconds ";
+	[ "$count" -gt 59 ] && printf "Waiting one minute " || printf "   Waiting a few seconds ";
 	while [ "$count" -gt 0 ]
 	do
 		printf "."
@@ -35,16 +38,21 @@ pause(){
 getHeartbeat(){
 	eval "response=$(docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w "%{http_code}" "$1")"
 }
+
+getHealthStatus(){
+  eval "health=$(docker inspect --format='{{.State.Health.Status}}' $1)"
+}
+
 loadData () {
 	export CONTEXT_BROKER="$1"
 	waitForContext
-	docker run --rm -v $(pwd)/import-data:/import-data \
+	docker run --rm -v "$(pwd)/import-data:/import-data" \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 		-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
 		--entrypoint /bin/ash curlimages/curl import-data
 	waitForIoTAgent
-	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
+	docker run --rm -v "$(pwd)/provision-devices:/provision-devices" \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 		-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
@@ -54,47 +62,57 @@ loadData () {
 
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
+	response=""
+	getHeartbeat "${CONTEXT}"
+	while [ "${response}" -eq 000 ]
 	do 
-		echo -e "\n@context HTTP state: ${response} (waiting for 200)"
+		echo -e "\n    @context HTTP state: ${response} (waiting for 200)"
 		pause 3
 		getHeartbeat "${CONTEXT}"
 	done
 }
 
 waitForDraco(){
-	echo -e "⏳ Waiting for Draco to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-draco` == "healthy" ]
+	echo -e "⏳ Waiting for Draco to be healthy\n"
+	health=""
+	getHealthStatus fiware-draco
+	while ! [ "${health}" == "healthy" ]
 	do 
-		echo -e "\nDraco HTTP state: ${response} (waiting for 200)"
+		echo -e "\n    Draco Health status: ${health} (waiting for healthy status)"
 		pause 15
-		getHeartbeat "${DRACO}"
+	  getHealthStatus fiware-draco
 	done
 	echo ""
-	echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
+	echo -e "Now open \033[4mhttp://localhost:${DRACO_API_PORT}/nifi\033[0m"
 }
 
 waitForMongo () {
-	echo -e "\n⏳ Waiting for \033[1mMongoDB\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' db-mongo` == "healthy" ]
-	do 
-		sleep 1
+	echo -e "\n⏳ Waiting for \033[1mMongoDB\033[0m to be healthy\n"
+	health=""
+	getHealthStatus db-mongo
+	while ! [ "${health}" == "healthy" ]
+	do
+		echo -e "\n    MongoDB Health status: ${health} (waiting for healthy status)"
+		pause 15
+	  getHealthStatus db-mongo
 	done
 }
 
 waitForOrion () {
-	echo -e "\n⏳ Waiting for \033[1;34mOrion\033[0m to be available\n"
-
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-orion` == "healthy" ]
+	echo -e "\n⏳ Waiting for \033[1;34mOrion\033[0m to be healthy\n"
+	health=""
+	getHealthStatus fiware-orion
+	while ! [ "${health}" == "healthy" ]
 	do
-		echo -e "\nContext Broker HTTP state: ${response} (waiting for 200)"
-		pause 6
-		getHeartbeat "${ORION}"
+		echo -e "\n    Orion Health status: ${health} (waiting for healthy status)"
+		pause 15
+	  getHealthStatus fiware-orion
 	done
 }
 
 waitForScorpio () {
 	echo -e "\n⏳ Waiting for \033[1;34mScorpio\033[0m to respond\n"
+	response=""
 	getHeartbeat "${SCORPIO}"
 	while [ "${response}" -eq 000 ]
 	do
@@ -112,14 +130,18 @@ waitForScorpio () {
 }
 
 waitForIoTAgent () {
-	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
-
-	do 
-		echo -e "\nIoT Agent HTTP state: ${response} (waiting for 200)"
-		pause 3
-		getHeartbeat "${IOT_AGENT}"
+	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be healthy\n"
+	health=""
+	getHealthStatus fiware-iot-agent
+	while ! [ "${health}" == "healthy" ]
+	do
+		echo -e "\n    IoT Agent Health status: ${health} (waiting for healthy status)"
+		pause 15
+	  getHealthStatus fiware-iot-agent
 	done
+	echo ""
+	echo -e "Now open \033[4mhttp://localhost:${DRACO_API_PORT}/nifi\033[0m"
+
 }
 
 displayServices () {
@@ -165,7 +187,7 @@ addDatabaseIndex () {
 stoppingContainers () {
 	export $(cat .env | grep "#" -v)
 	echo "Stopping containers"
-	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+	docker-compose --env-file ../.env --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
 }
 
 command="$1"
@@ -181,15 +203,15 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		docker-compose --env-file ../.env --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
 		loadData orion:1026
 		waitForDraco
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
-		echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${DRACO_API_PORT}/nifi\033[0m"
 		;;
 	 "mongodb")
 		stoppingContainers
@@ -199,15 +221,15 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		docker-compose --env-file ../.env --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
 		loadData orion:1026
 		waitForDraco
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
-		echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${DRACO_API_PORT}/nifi\033[0m"
 		;;
     "postgres")
 		stoppingContainers
@@ -217,15 +239,15 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		docker-compose --env-file ../.env --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
 		loadData orion:1026
 		waitForDraco
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
-		echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${DRACO_API_PORT}/nifi\033[0m"
 		;;
 	"mysql")
 		stoppingContainers
@@ -235,7 +257,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		docker-compose  --env-file ../.env -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -243,8 +265,8 @@ case "${command}" in
 		displayServices
 		waitForDraco
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
-		echo -e "Now open \033[4mhttp://localhost:9090/nifi\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:${DRACO_API_PORT}/nifi\033[0m"
 		;;
 	"stop")
 		stoppingContainers
@@ -253,9 +275,8 @@ case "${command}" in
 		./services postgres
 		;;
 	"create")
-		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
-		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
+		docker-compose --env-file ../.env --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
 		;;
 	*)
 		echo "Command not Found."
