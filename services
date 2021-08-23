@@ -111,8 +111,8 @@ addDatabaseIndex () {
 
 stoppingContainers () {
 	export $(cat .env | grep "#" -v)
-	echo "Stopping containers"
-	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+	echo "Stopping running containers"
+	docker compose -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
 }
 
 command="$1"
@@ -122,13 +122,13 @@ case "${command}" in
         ;;
     "multiple")
 		stoppingContainers
-		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m, \033[1mPostgreSQL\033[0m and \033[1mMySQL\033[0m databases."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m, \033[1mPostgreSQL\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to Mongo-DB, PostgeSQL and MySQL"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		docker compose -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -139,13 +139,13 @@ case "${command}" in
 		;;
 	 "mongodb")
 		stoppingContainers
-		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to Mongo-DB only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		docker compose -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -156,13 +156,13 @@ case "${command}" in
 		;;
     "postgres")
 		stoppingContainers
-		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mPostgreSQL\033[0m databases."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mPostgreSQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to PostgreSQL only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		docker compose -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -173,7 +173,7 @@ case "${command}" in
 		;;
 	"mysql")
 		stoppingContainers
-		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mDraco\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mDraco\033[0m is configured to write context data to MySQL only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
@@ -198,7 +198,7 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull curlimages/curl
-		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
+		docker compose -f docker-compose/multiple.yml -p fiware pull
 		;;
 	*)
 		echo "Command not Found."
