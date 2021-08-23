@@ -112,7 +112,7 @@ addDatabaseIndex () {
 stoppingContainers () {
 	export $(cat .env | grep "#" -v)
 	echo "Stopping running containers"
-	docker compose -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+	docker-compose -f docker-compose/multiple.yml  down -v --remove-orphans
 }
 
 command="$1"
@@ -128,7 +128,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker compose -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/multiple.yml  up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -145,7 +145,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker compose -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/mongodb.yml  up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -162,7 +162,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker compose -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/postgres.yml  up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -179,7 +179,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		docker-compose  -f docker-compose/mysql.yml  up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -198,7 +198,7 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull curlimages/curl
-		docker compose -f docker-compose/multiple.yml -p fiware pull
+		docker-compose -f docker-compose/multiple.yml  pull
 		;;
 	*)
 		echo "Command not Found."
