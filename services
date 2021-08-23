@@ -196,7 +196,7 @@ case "${command}" in
 		stoppingContainers
 		;;
 	"start")
-		./services mongodb
+		./services mongodb $2
 		;;
 	"create")
 		export $(cat .env | grep "#" -v)
