@@ -13,7 +13,7 @@ if (( $# == 2 )); then
 fi
 
 # Import variables
-source .env
+export $(cat .env | grep "#" -v)
 
 SCORPIO="http://scorpio:${SCORPIO_PORT}/scorpio/v1/info/"
 ORION="http://orion:${ORION_LD_PORT}/version"
@@ -190,9 +190,21 @@ addDatabaseIndex () {
 
 
 stoppingContainers () {
-	export $(cat .env | grep "#" -v)
-	echo "Stopping containers"
-	${dockerCmd} -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+	CONTAINERS=$(docker ps --filter "label=org.fiware=tutorial" -aq)
+	if [[ -n $CONTAINERS ]]; then 
+		echo "Stopping containers"
+		docker rm -f $CONTAINERS || true
+	fi
+	VOLUMES=$(docker volume ls -qf dangling=true) 
+	if [[ -n $VOLUMES ]]; then 
+		echo "Removing old volumes"
+		docker volume rm $VOLUMES || true
+	fi
+	NETWORKS=$(docker network ls  --filter "label=org.fiware=tutorial" -q) 
+	if [[ -n $NETWORKS ]]; then 
+		echo "Removing tutorial networks"
+		docker network rm $NETWORKS || true
+	fi
 }
 
 command="$1"
