@@ -25,9 +25,9 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 ## コンテンツ
 
 <details>
-<summary><strong>Details</strong></summary>
+<summary>詳細 <b>(クリックして拡大)</b></summary>
 
--   [データの永続性](#data-persistence)
+-   [Apache NIFI を使用したデータの永続性](#data-persistence-using-apache-nifi)
 -   [アーキテクチャ](#architecture)
 -   [前提条件](#prerequisites)
     -   [Docker と Docker Compose](#docker-and-docker-compose)
@@ -64,8 +64,8 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
         -   [MySQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mysql-server)
         -   [MySQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-mysql-server)
 -   [マルチ・エージェント - 複数のデータベースへのコンテキスト・データの永続化](#multi-agent---persisting-context-data-into-a-multiple-databases)
-    -   [マルチ・エージェント - 起動](#multi-agent---start-up)
     -   [マルチ・エージェント - 複数のデータベースのための Draco 設定](#multi-agent---draco-configuration-for-multiple-databases)
+    -   [マルチ・エージェント - 起動](#multi-agent---start-up)
         -   [Draco サービスの健全性をチェック](#checking-the-draco-service-health-3)
         -   [コンテキスト・データの生成](#generating-context-data-3)
         -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-3)
@@ -74,59 +74,39 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 
 </details>
 
-<a name="data-persistence"></a>
+<a name="data-persistence-using-apache-nifi"></a>
 
-# データの永続性
+# Apache NIFI を使用したデータの永続性
 
 > "Plots within plots, but all roads lead down the dragon’s gullet."
 >
 > — George R.R. Martin (A Dance With Dragons)
 
-これまでのチュートリアルでは、一連のIoTセンサ (実世界の状態の測定値を提供)、
-および2つの FIWARE コンポーネント (**Orion Context Broker** と **IoT Agent**) を
-紹介しました。このチュートリアルでは、新しいデータ永続化コンポーネント-
-**FIWARE Draco** を紹介します。
+[FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) は、履歴コンテキスト・データを一連のデータベースに
+永続化できる代替の汎用イネーブラーです。**Cygnus** のように **Draco** は、**Orion Context Broker**から状態の変化を
+サブスクライブし、データ・シンクに永続化する前に、そのデータを処理するための目標到達プロセスを提供できます。
 
-これまでのシステムは**現在**のコンテキストを処理するように構築されていました。
-言い換えれば、システムは与えられた瞬間における現実世界のオブジェクトの状態を
-定義するデータ・エンティティを保持しています。
+前述のように、履歴コンテキスト・データの永続化は、ビッグデータ分析、傾向の発見、または外れ値の削除に役立ちます。
+これを行うために使用するツールはニーズによって異なり、**Cygnus** とは異なり、** Draco ** は、手順を設定および監視
+するためのグラフィカル・インターフェイスを提供します。
 
-この定義からわかるように、
-コンテキストはシステムの現在の状態にのみ関係しています。
-システムの履歴状態を報告することは既存コンポーネントの責任ではありません。
-コンテキストは、各センサが Context Broker
-に送信した最後の測定値に基づいています。
+違いの要約を以下に示します:
 
-履歴を永続化するためには、コンテキストが更新されるたびに状態の変化を
-データベースに保持するように既存のアーキテクチャを拡張する必要があります。
-
-履歴コンテキスト・データを永続化することはビッグデータ分析に役立ちます -
-それは傾向を発見するために使われることができます。あるいは、データを
-サンプリングし、集約して外れたデータ測定の影響を取り除くことができます。
-ただし、各スマート・ソリューション内では、各エンティティ型の重要性が
-異なり、エンティティと属性を様々なレートでサンプリングする必要があります。
-
-コンテキスト・データを使用するためのビジネス要件はアプリケーションごとに
-異なるため、履歴データの永続性に関する標準的なユースケースは1つもありません。
-それぞれの状況は固有のものであり、1つのサイズがすべてに当てはまるわけでは
-ありません。したがって、Context Broker に履歴コンテキスト・データの永続化を
-与えることではなく、この役割は、構成可能な別のコンポーネント **Draco**
-に分離されています。
-
-ご想像のとおり、オープンソース・プラットフォームの一部としての **Draco** は、
-データの永続化に使用されるデータベースに関する技術に依存しません。
-使用するデータベースは、ビジネス・ニーズに応じて異なります。
-
-ただし、この柔軟性を提供するにはコストがかかります。システムの各部分を個別に設定
-し、必要な最小限のデータだけを通知するように通知を設定する必要があります。
+| Draco                                                                           | Cygnus                                                                           |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 通知用の NGSIv2 インターフェイスを提供                                          | 通知用の NGSIv1 インターフェイスを提供                                           |
+| 構成可能なサブスクリプション・エンドポイント。ただし、デフォルトは `/v2/notify` | サブスクリプション・エンドポイントは `/notify` をリッスン                        |
+| 単一のポートでリッスン                                                          | 入力ごとに別々のポートでリッスン                                                 |
+| グラフィカル・インターフェイスで構成                                            | 構成ファイルを介して構成                                                         |
+| Apache NIFI ベース                                                              | Apache Flume ベース                                                              |
+| **Draco** の[ドキュメント](https://fiware-draco.readthedocs.io/en/latest/)      | **Cygnus** の[ドキュメント](https://fiware-cygnus.readthedocs.io/en/latest/)     |
 
 #### デバイス・モニタ
 
-このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context
-Broker に接続されます。使用しているアーキテクチャとプロトコルの詳細は
-、[IoT Sensors チュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)に
-あります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確
-認できます : `http://localhost:3000/device/monitor`
+このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context Broker に接続されます。使用している
+アーキテクチャとプロトコルの詳細は、[IoT Sensors チュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)
+にあります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確認できます:
+`http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-Flume/img/device-monitor.png)
 
@@ -134,76 +114,55 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
 
 # アーキテクチャ
 
-このアプリケーションは、[以前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Agent/)で作成した
-コンポーネントと ダミー IoT デバイスをベースにしています。
-3 つの FIWARE コンポーネントを使用します。
+このアプリケーションは、[以前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Agent/)で作成したコンポーネントと
+ダミー IoT デバイスをベースにしています。3 つの FIWARE コンポーネントを使用します。
 [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
 [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/),
 コンテキスト・データをデータベースに永続化するための
-[Draco Generic Enabler](https://fiware-draco.readthedocs.io/en/latest/)
-を導入しました。
-Orion Context Broker と IoT Agent の両方が
-[MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の
-永続性を維持しています。**MySQL**, **PostgreSQL**, **MongoDB**
-データベースのいずれかで、履歴コンテキスト・データを永続化します。
+[Draco Generic Enabler](https://fiware-draco.readthedocs.io/en/latest/) を導入しました。
+Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の
+永続性を維持しています。**MySQL**, **PostgreSQL**, **MongoDB** データベースのいずれかで、履歴コンテキスト・データを永続化
+します。
 
 したがって、全体のアーキテクチャーは以下の要素で構成されます :
 
--   3 つの **FIWARE Generic Enabler** :
-    -   FIWARE
-        [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)
-        は、
-        [NGSI](https://fiware.github.io/specifications/ngsiv2/latest/)
-        を使用してリクエストを受信します
-    -   FIWARE
-        [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/)
-        は、
+-   3 つの **FIWARE Generic Enabler**:
+    -   FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は、
+        [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
+    -   FIWARE [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
-        フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し
-        、Context Broker がコンテキスト・エンティティの状態を変更するための
-        [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-        リクエストに変換します
--   FIWARE Draco はコンテキストの変更をサブスクライブし、データベース
-    (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
--   以下の**データベース**の 1 つ、2 つまたは 3 つ :
-    -   基礎となる [MongoDB](https://www.mongodb.com/) データベース :
-        -   **Orion Context Broker** が、データ・エンティティなどの
-            コンテキスト・データ情報を保持し、サブスクリプション、
+        フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの
+        状態を変更するための [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
+-   FIWARE Draco はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **MongoDB**)
+    に保持します。
+-   以下の**データベース**の 1 つ、2 つまたは 3 つ:
+    -   基礎となる [MongoDB](https://www.mongodb.com/) データベース:
+        -   **Orion Context Broker** が、データ・エンティティなどのコンテキスト・データ情報を保持し、サブスクリプション、
             レジストレーションするために使用します
-        -   **IoT Agent** がデバイスの URL やキーなどのデバイス情報を
-            保持するために使用します
-        -   履歴コンテキスト・データを保持するためのデータ・シンクとして
-            潜在的に使用します
-    -   追加の [PostgreSQL](https://www.postgresql.org/) データベース :
+        -   **IoT Agent** がデバイスの URL やキーなどのデバイス情報を保持するために使用します
+        -   履歴コンテキスト・データを保持するためのデータ・シンクとして潜在的に使用します
+    -   追加の [PostgreSQL](https://www.postgresql.org/) データベース:
         -   履歴データを保持するためのデータ・シンクとして潜在的に使用します
     -   追加の [MySQL](https://www.mysql.com/) データベース :
         -   履歴データを保持するためのデータ・シンクとして潜在的に使用します
--   3 つの**コンテキスト・プロバイダ** :
-    -   **在庫管理フロントエンド**は、このチュートリアルで使用していません。これ
-        は以下を行います :
-        -   店舗情報を表示し、ユーザーがダミー IoT デバイスと対話できるようにし
-            ます
+-   3 つの**コンテキスト・プロバイダ**:
+    -   **在庫管理フロントエンド**は、このチュートリアルで使用していません。これは以下を行います :
+        -   店舗情報を表示し、ユーザーがダミー IoT デバイスと対話できるようにします
         -   各店舗で購入できる商品を表示します
         -   ユーザが製品を購入して在庫数を減らすことを許可します
     -   HTTP 上で動作する
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
-        プロトコルを使用して
-        、[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)の
+        プロトコルを使用して、[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)の
         セットとして機能する Web サーバ
-    -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用
-        しません。これは以下を行います :
-        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使
-            用してリクエストを受信します
-        -   独自の API を独自のフォーマットで使用して、公開されているデータ・ソ
-            ースへのリクエストを行います
-        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式
-            でコンテキスト・データを Orion Context Broker に返します
+    -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用しません。これは以下を行います:
+        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
+        -   独自の API を独自のフォーマットで使用して、公開されているデータ・ソースへのリクエストを行います
+        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式でコンテキスト・データを Orion Context Broker
+            に返します
 
-要素間のすべての対話は HTTP リクエストによって開始されるため、
-エンティティはコンテナ化され、公開されたポートから実行されます。
+要素間のすべての対話は HTTP リクエストによって開始されるため、エンティティはコンテナ化され、公開されたポートから実行されます。
 
-チュートリアルの各セクションの具体的なアーキテクチャについては、
-以下で説明します。
+チュートリアルの各セクションの具体的なアーキテクチャについては、以下で説明します。
 
 <a name="prerequisites"></a>
 
@@ -217,50 +176,39 @@ Orion Context Broker と IoT Agent の両方が
 を使用して実行されます。**Docker** は、さまざまコンポーネントをそれぞれの環境に
 分離することを可能にするコンテナ・テクノロジです。
 
--   Docker Windows にインストールするには
-    、[こちら](https://docs.docker.com/docker-for-windows/)の手順に従ってくださ
-    い
--   Docker Mac にインストールするには
-    、[こちら](https://docs.docker.com/docker-for-mac/)の手順に従ってください
--   Docker Linux にインストールするには
-    、[こちら](https://docs.docker.com/install/)の手順に従ってください
+-   Docker Windows にインストールするには、[こちら](https://docs.docker.com/docker-for-windows/)の手順に従ってください
+-   Docker Mac にインストールするには、[こちら](https://docs.docker.com/docker-for-mac/)の手順に従ってください
+-   Docker Linux にインストールするには、[こちら](https://docs.docker.com/install/)の手順に従ってください
 
-**Docker Compose** は、マルチコンテナ Docker アプリケーションを定義して
-実行するためのツールです。
+**Docker Compose** は、マルチコンテナ Docker アプリケーションを定義して実行するためのツールです。
 [YAML file](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/tree/master/docker-compose)
 ファイルは、アプリケーションのために必要なサービスを構成するために使用します。
 つまり、すべてのコンテナ・サービスは 1 つのコマンドで呼び出すことができます。
-Docker Compose は、デフォルトで Docker for Windows と Docker for Mac
-の一部としてインストールされますが、Linux ユーザは
-[ここ](https://docs.docker.com/compose/install/)
-に記載されている手順に従う必要があります。
+Docker Compose は、デフォルトで Docker for Windows と Docker for Mac の一部としてインストールされますが、Linux ユーザは
+[ここ](https://docs.docker.com/compose/install/) に記載されている手順に従う必要があります。
 
-次のコマンドを使用して、現在の **Docker** バージョンと **Docker Compose** バージ
-ョンを確認できます :
+次のコマンドを使用して、現在の **Docker** バージョンと **Docker Compose** バージョンを確認できます :
 
 ```console
 docker-compose -v
 docker version
 ```
 
-Docker バージョン 18.03 以降と Docker Compose 1.29 以上を使用していることを
-確認し、必要に応じてアップグレードしてください。
+Docker バージョン 20.10 以降と Docker Compose 1.29 以上を使用していることを確認し、必要に応じてアップグレードしてください。
 
 <a name="cygwin-for-windows"></a>
 
 ## Cygwin for Windows
 
-シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは
-[cygwin](http://www.cygwin.com/) をダウンロードして、Windows 上の
-Linux ディストリビューションと同様のコマンドライン機能を提供する必要があります。
+シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは [cygwin](http://www.cygwin.com/) をダウンロードして、
+Windows 上の Linux ディストリビューションと同様のコマンドライン機能を提供する必要があります。
 
 <a name="start-up"></a>
 
 # 起動
 
-開始する前に、必要な Docker イメージをローカルで取得または構築しておく必要があり
-ます。リポジトリを複製し、以下のコマンドを実行して必要なイメージを作成してくださ
-い :
+開始する前に、必要な Docker イメージをローカルで取得または構築しておく必要があります。リポジトリを複製し、以下のコマンドを
+実行して必要なイメージを作成してください:
 
 ```console
 git clone https://github.com/fiware/tutorials.Historic-Context-NIFI.git
@@ -270,21 +218,17 @@ git checkout NGSI-v2
 ./services create
 ```
 
-その後、リポジトリ内で提供される
-[services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/NGSI-v2/services)
-の Bash スクリプトを実行することによって、コマンドラインから
-すべてのサービスを初期化できます :
+その後、リポジトリ内で提供される [services](https://github.com/FIWARE/tutorials.Historic-Context-NIFI/blob/NGSI-v2/services)
+の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初期化できます :
 
 ```console
 ./services <command>
 ```
 
-ここで、`<command>` は、有効にしたいデータベースによって異なります。このコマンド
-は、以前のチュートリアルのシード・データをインポートし、起動時にダミー
-IoT センサをプロビジョニングします。
+ここで、`<command>` は、有効にしたいデータベースによって異なります。このコマンドは、以前のチュートリアルのシード・データを
+インポートし、起動時にダミー IoT センサをプロビジョニングします。
 
-> :information_source: **注:** クリーンアップをやり直したい場合は、次のコマンド
-> を使用して再起動することができます :
+> :information_source: **注:** クリーンアップをやり直したい場合は、次のコマンドを使用して再起動することができます :
 >
 > ```console
 > ./services stop
@@ -294,11 +238,9 @@ IoT センサをプロビジョニングします。
 
 # MongoDB - コンテキスト・データをデータベースに永続化
 
-MongoDB テクノロジを使用して履歴コンテキスト・データを永続化することは、
-Orion Context Broker および IoT Agent に関連するデータを保持するために、
-MongoDB インスタンスを既に使用しているため、設定が比較的簡単です。
-MongoDB インスタンスは標準で `27017` ポートをリッスンしており、
-全体的なアーキテクチャは以下のようになります。
+MongoDB テクノロジを使用して履歴コンテキスト・データを永続化することは、Orion Context Broker および IoT Agent に関連するデータを
+保持するために、MongoDB インスタンスを既に使用しているため、設定が比較的簡単です。MongoDB インスタンスは標準で `27017` ポートを
+リッスンしており、全体的なアーキテクチャは以下のようになります。
 
 ![](https://fiware.github.io/tutorials.Historic-Context-NIFI/img/mongo-draco-tutorial.png)
 
@@ -315,7 +257,6 @@ mongo-db:
         - "27017:27017"
     networks:
         - default
-
 ```
 
 <a name="mongodb---draco-configuration"></a>
@@ -344,8 +285,17 @@ draco:
 -   Draco の Web インターフェース - `9090` は、プロセッサの設定のためだけに
     公開されています
 
-最初に、ブラウザで、この URL `http://localhost:9090/nifi` を使って、
-Draco をオープンしてください。
+<a name="mongodb---start-up"></a>
+
+## MongoDB - Start up
+
+**MongoDB** データベースのみでシステムを起動するには、次のコマンドを実行します:
+
+```console
+./services mongodb
+```
+
+次に、ブラウザに移動し、このURL `http://localhost:9090/nifi` を使用して Draco を開きます。
 
 NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
 テンプレート・アイコンを見つけて、Draco ユーザ・スペースの中に
@@ -359,16 +309,6 @@ NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
 (shift キーを押しながらすべてのプロセッサをクリック)、
 スタート・ボタンをクリックして起動します。
 これで、各プロセッサのステータス・アイコンが赤から緑に変わりました。
-
-<a name="mongodb---start-up"></a>
-
-## MongoDB - 起動
-
-**MongoDB** データベースのみでシステムを起動するには、次のコマンドを実行します :
-
-```console
-./services mongodb
-```
 
 <a name="checking-the-draco-service-health"></a>
 
@@ -801,8 +741,17 @@ draco:
 -   Draco の Web インターフェース - `9090` は、プロセッサの設定のためだけに
     公開されています
 
-最初に、ブラウザで、この URL `http://localhost:9090/nifi` を使って、
-Draco をオープンしてください。
+<a name="postgresql---start-up"></a>
+
+## PostgreSQL - 起動
+
+**PostgreSQL** データベースでシステムを起動するには、次のコマンドを実行します:
+
+```console
+./services postgres
+```
+
+次に、ブラウザに移動し、このURL `http://localhost:9090/nifi` を使用して Draco を開きます。
 
 NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
 テンプレート・アイコンを見つけて、Draco ユーザ・スペースの中に
@@ -840,16 +789,6 @@ NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
     (shift キーを押しながらすべてのプロセッサをクリック)、
     スタート・ボタンをクリックして起動します。
     これで、各プロセッサのステータス・アイコンが赤から緑に変わりました
-
-<a name="postgresql---start-up"></a>
-
-## PostgreSQL - 起動
-
-**PostgreSQL** データベースでシステムを起動するには、次のコマンドを実行します :
-
-```console
-./services postgres
-```
 
 <a name="checking-the-draco-service-health-1"></a>
 
@@ -1219,8 +1158,17 @@ draco:
 -   Draco の Web インターフェース - `9090` は、プロセッサの設定のためだけに
     公開されています
 
-最初に、ブラウザで、この URL `http://localhost:9090/nifi` を使って、
-Draco をオープンしてください。
+<a name="mysql---start-up"></a>
+
+## MySQL - 起動
+
+システムで **MySQL** データベースを起動するには、次のコマンドを実行します :
+
+```console
+./services mysql
+```
+
+次に、ブラウザに移動し、このURL `http://localhost:9090/nifi` を使用して Draco を開きます。
 
 NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
 テンプレート・アイコンを見つけて、Draco ユーザ・スペースの中に
@@ -1257,16 +1205,6 @@ NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
     (shift キーを押しながらすべてのプロセッサをクリック)、
     スタート・ボタンをクリックして起動します。
     これで、各プロセッサのステータス・アイコンが赤から緑に変わりました
-
-<a name="mysql---start-up"></a>
-
-## MySQL - 起動
-
-システムで **MySQL** データベースを起動するには、次のコマンドを実行します :
-
-```console
-./services mysql
-```
 
 <a name="checking-the-draco-service-health-2"></a>
 
@@ -1577,16 +1515,6 @@ MySQL クライアントを終了して対話モードを終了するには、�
 IoT Agent に関連するデータを保持するためとデータ永続化用に MongoDB の
 3つのデータベースを持つシステムができました。
 
-<a name="multi-agent---start-up"></a>
-
-## マルチ・エージェント - 起動
-
-**複数**のデータベースでシステムを起動するには、次のコマンドを実行します :
-
-```console
-./services multiple
-```
-
 <a name="multi-agent---draco-configuration-for-multiple-databases"></a>
 
 ## マルチ・エージェント - 複数のデータベースのための Draco 設定
@@ -1615,8 +1543,17 @@ draco:
 -   Draco の Web インターフェース - `9090` は、プロセッサの設定のためだけに
     公開されています
 
-最初に、ブラウザで、この URL `http://localhost:9090/nifi` を使って、
-Draco をオープンしてください。
+<a name="multi-agent---start-up"></a>
+
+## マルチ・エージェント - 起動
+
+**複数**のデータベースでシステムを起動するには、次のコマンドを実行します :
+
+```console
+./services multiple
+```
+
+次に、ブラウザに移動し、このURL `http://localhost:9090/nifi` を使用して Draco を開きます。
 
 NiFi GUI の上部にあるコンポーネント・ツールバーに行き、
 テンプレート・アイコンを見つけて、Draco ユーザ・スペースの中に
@@ -1772,8 +1709,7 @@ curl -iX POST \
 
 ## マルチ・エージェント - 永続化データの読み込み
 
-データベースから永続データを読み取るには、
-このチュートリアルの前のセクションを参照してください。
+データベースから永続データを読み取るには、このチュートリアルの前のセクションを参照してください。
 
 <a name="next-steps"></a>
 
@@ -1782,10 +1718,10 @@ curl -iX POST \
 高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか
 ？このシリーズ
 の[他のチュートリアル](https://www.letsfiware.jp/fiware-tutorials)を読むことで見
-つけることができます :
+つけることができます
 
 ---
 
 ## License
 
-[MIT](LICENSE) © 2018-2020 FIWARE Foundation e.V.
+[MIT](LICENSE) © 2018-2022 FIWARE Foundation e.V.
