@@ -21,6 +21,7 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 も利用できます。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9658043920d9be43914a)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/FIWARE/tutorials.Historic-Context-NIFI/tree/NGSI-v2)
 
 ## コンテンツ
 
