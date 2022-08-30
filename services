@@ -19,7 +19,7 @@ SCORPIO="http://scorpio:${SCORPIO_PORT}/scorpio/v1/info/"
 ORION="http://orion:${ORION_LD_PORT}/version"
 IOT_AGENT="http://iot-agent:${IOTA_NORTH_PORT}/version"
 DRACO="http://draco:${DRACO_API_PORT}/nifi-api/system-diagnostics"
-CONTEXT="http://context-provider:${TUTORIAL_APP_PORT}/data-models/ngsi-context.jsonld"
+LINKED_DATA_CONTEXT="http://context/ngsi-context.jsonld"
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
@@ -54,26 +54,25 @@ loadData () {
 	docker run --rm -v "$(pwd)/import-data:/import-data" \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
-		-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
+		-e TUTORIAL_DATA_MODELS_CONTEXT=${LINKED_DATA_CONTEXT} \
 		--entrypoint /bin/ash curlimages/curl import-data
 	waitForIoTAgent
 	docker run --rm -v "$(pwd)/provision-devices:/provision-devices" \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
-		-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
+		-e TUTORIAL_DATA_MODELS_CONTEXT=${LINKED_DATA_CONTEXT} \
 		--entrypoint /bin/ash curlimages/curl provision-devices
 	echo ""
 }
 
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
-	response=""
-	getHeartbeat "${CONTEXT}"
+	getHeartbeat "${LINKED_DATA_CONTEXT}"
 	while [ "${response}" -eq 000 ]
-	do 
-		echo -e "\n    @context HTTP state: ${response} (waiting for 200)"
+	do
+		echo -e "\n@Context HTTP state: ${response} (waiting for 200)"
 		pause 3
-		getHeartbeat "${CONTEXT}"
+		getHeartbeat "${LINKED_DATA_CONTEXT}"
 	done
 }
 

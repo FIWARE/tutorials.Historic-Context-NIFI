@@ -1,0 +1,35 @@
+{
+    "@context": {
+
+        "ngsi-ld": "https://uri.etsi.org/ngsi-ld/",
+        "fiware": "https://uri.fiware.org/ns/data-models#",
+        "schema": "https://schema.org/",
+        "Anomaly": "fiware:Anomaly",
+        "address": "https://smartdatamodels.org/address",
+        "alertSource": "https://smartdatamodels.org/dataModel.Alert/alertSource",
+        "alternateName": "https://smartdatamodels.org/alternateName",
+        "anomalousProperty": "https://smartdatamodels.org/dataModel.Alert/anomalousProperty",
+        "areaServed": "https://smartdatamodels.org/areaServed",
+        "category": "https://smartdatamodels.org/dataModel.Alert/category",
+        "data": "ngsi-ld:data",
+        "dataProvider": "https://smartdatamodels.org/dataProvider",
+        "dateCreated": "https://smartdatamodels.org/dateCreated",
+        "dateDetected": "https://smartdatamodels.org/dataModel.Alert/dateDetected",
+        "dateIssued": "https://smartdatamodels.org/dataModel.Alert/dateIssued",
+        "dateModified": "https://smartdatamodels.org/dateModified",
+        "description": "http://purl.org/dc/terms/description",
+        "detectedBy": "https://smartdatamodels.org/dataModel.Alert/detectedBy",
+        "id": "@id",
+        "location": "ngsi-ld:location",
+        "name": "https://smartdatamodels.org/name",
+        "owner": "https://smartdatamodels.org/owner",
+        "seeAlso": "https://smartdatamodels.org/seeAlso",
+        "severity": "https://smartdatamodels.org/dataModel.Alert/severity",
+        "source": "https://smartdatamodels.org/source",
+        "subCategory": "https://smartdatamodels.org/dataModel.Alert/subCategory",
+        "thresholdBreach": "https://smartdatamodels.org/dataModel.Alert/thresholdBreach",
+        "type": "@type",
+        "validFrom": "https://smartdatamodels.org/dataModel.Alert/validFrom",
+        "validTo": "https://smartdatamodels.org/dataModel.Alert/validTo"
+    }
+}
