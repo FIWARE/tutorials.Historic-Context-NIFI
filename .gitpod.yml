@@ -1,3 +1,7 @@
+tasks:
+  - name: Pull Images
+    init: ./services create
+
 ports:
   - name: JSON-LD context (HTTPD)
     description: Public User JSON-LD context
