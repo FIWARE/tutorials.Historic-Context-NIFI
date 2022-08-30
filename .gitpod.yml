@@ -3,25 +3,25 @@ ports:
     description: Context Broker
     port: 1026
     onOpen: notify
-  - name: Wilma
-    description: PEP Proxy
-    port: 1027
-    onOpen: ignore
   - name: Tutorial App
     description: Web app displaying context data
     port: 3000
+    onOpen: open-preview
+  - name: Draco (Apache NIFI)
+    description: Automation of the flow of the context data between software systems. 
+    port: 9090
     onOpen: open-preview
   - name: Tutorial Devices
     description: Dummy IoT Sensors over HTTP
     port: 3001
     onOpen: ignore
-  - name: Keyrock
-    description: Identity Manager
-    port: 3005
-    onOpen: open-preview
   - name: MySQL
-    description: Database for Keyrock
+    description: MySQL Database
     port: 3306
+    onOpen: ignore
+  - name: PostGres
+    description: PostGres Database
+    port: 5432
     onOpen: ignore
   - name: IoT Agent (North Port)
     description: NGSI data and device provisioning
@@ -35,3 +35,5 @@ ports:
     description: Database for Orion + IoT Agent
     port: 27017
     onOpen: ignore
+
+    
