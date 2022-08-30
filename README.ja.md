@@ -16,6 +16,7 @@ IoT センサをアクティブにして、それらのセンサからの測定�
  [Postman ドキュメント](https://fiware.github.io/tutorials.Historic-Context-NIFI/)としても利用できます。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9658043920d9be43914a)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/FIWARE/tutorials.Historic-Context-NIFI/tree/NGSI-LD)
 
 ## コンテンツ
 

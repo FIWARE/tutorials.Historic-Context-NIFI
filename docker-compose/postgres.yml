@@ -58,6 +58,7 @@ services:
     image: ging/fiware-draco:${DRACO_VERSION}
     hostname: draco
     container_name: fiware-draco
+    platform: linux/amd64
     networks:
       - default
     environment:
@@ -70,7 +71,7 @@ services:
       - "${DRACO_SUBSCRIPTION_PORT}:${DRACO_SUBSCRIPTION_PORT}"
     healthcheck:
       test: curl --fail -s http://draco:${DRACO_API_PORT}/nifi-api/system-diagnostics || exit 1
-      start_period: 1m
+      start_period: 3m
 
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:

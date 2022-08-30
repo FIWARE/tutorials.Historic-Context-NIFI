@@ -54,9 +54,11 @@ services:
   draco:
     labels:
       org.fiware: 'tutorial'
-    image: ging/fiware-draco:${DRACO_VERSION}
+    #image: ging/fiware-draco:${DRACO_VERSION}
+    image: draco
     hostname: draco
     container_name: fiware-draco
+    #platform: linux/amd64
     networks:
       - default
     environment:
