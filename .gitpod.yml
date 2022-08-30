@@ -3,14 +3,17 @@ ports:
     description: Context Broker
     port: 1026
     onOpen: notify
+    visibility: public
   - name: Tutorial App
     description: Web app displaying context data
     port: 3000
     onOpen: open-preview
+    visibility: public
   - name: Draco (Apache NIFI)
     description: Automation of the flow of the context data between software systems. 
     port: 9090
     onOpen: open-preview
+    visibility: public
   - name: Tutorial Devices
     description: Dummy IoT Sensors over HTTP
     port: 3001
@@ -27,6 +30,7 @@ ports:
     description: NGSI data and device provisioning
     port: 4041
     onOpen: ignore
+    visibility: public
   - name: IoT Agent (South Port)
     description: Ultralight HTTP measures
     port: 7896
