@@ -266,7 +266,7 @@ mongo-db:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - mongo-db
@@ -774,7 +774,7 @@ postgres-db:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - postgres-db
@@ -1191,7 +1191,7 @@ mysql-db:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - mysql-db
@@ -1626,7 +1626,7 @@ IoT Agent に関連するデータを保持するためとデータ永続化用�
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - mysql-db

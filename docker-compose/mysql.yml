@@ -22,7 +22,7 @@ services:
   draco:
     labels:
       org.fiware: 'tutorial'
-    image: ging/fiware-draco:${DRACO_VERSION}
+    image: quay.io/fiware/draco:${DRACO_VERSION}
     hostname: draco
     container_name: fiware-draco
     networks:

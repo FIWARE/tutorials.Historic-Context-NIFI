@@ -247,7 +247,7 @@ mongo-db:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - mongo-db
@@ -698,7 +698,7 @@ The `postgres-db` container is driven by environment variables as shown:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - postgres-db
@@ -1123,7 +1123,7 @@ The `mysql-db` container is driven by environment variables as shown:
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - mysql-db
@@ -1459,7 +1459,7 @@ persistence and holding data related to the Orion Context Broker and the IoT Age
 
 ```yaml
 draco:
-    image: ging/fiware-draco:1.1.0
+    image: quay.io/fiware/draco
     container_name: draco
     depends_on:
         - mysql-db
