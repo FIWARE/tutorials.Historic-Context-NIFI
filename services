@@ -194,7 +194,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose  -f docker-compose/mysql.yml up -d --remove-orphans
+		${dockerCmd} -f docker-compose/mysql.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
