@@ -20,6 +20,8 @@ services:
 
   # Draco is configured to write context data to Mongo-DB
   draco:
+    labels:
+      org.fiware: 'tutorial'
     image: ging/fiware-draco:${DRACO_VERSION}
     hostname: draco
     container_name: fiware-draco

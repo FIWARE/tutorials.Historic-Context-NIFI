@@ -20,6 +20,8 @@ services:
 
   # Draco is configured to write context data to Mongo-DB, PostgeSQL and MySQL
   draco:
+    labels:
+      org.fiware: 'tutorial'
     image: ging/fiware-draco:${DRACO_VERSION}
     hostname: draco
     container_name: fiware-draco
@@ -148,6 +150,8 @@ services:
       - mysql-db:/var/lib/mysql
 
   postgres-db:
+    labels:
+      org.fiware: 'tutorial'
     image: postgres
     hostname: postgres-db
     container_name: db-postgres
