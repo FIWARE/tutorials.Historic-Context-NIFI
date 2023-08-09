@@ -764,7 +764,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/nifi-api/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening
 on another port.
 
-#### :one: Request:
+#### :four: Request:
 
 ```console
 curl -X GET \
@@ -1187,11 +1187,11 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening on another
 port.
 
-#### :one: Request:
+#### :six: Request:
 
 ```console
 curl -X GET \
-  'http://localhost:9090/system-diagnostics'
+  'http://localhost:9090/nifi-api/system-diagnostics'
 ```
 
 #### Response:
@@ -1508,7 +1508,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening on another
 port.
 
-#### :one::zero: Request:
+#### :eight: Request:
 
 ```console
 curl -X GET \
