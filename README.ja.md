@@ -525,7 +525,7 @@ docker run -it --network fiware_default  --entrypoint /bin/bash mongo
 データベースにログインできます :
 
 ```bash
-mongo --host mongo-db
+mongosh --host mongo-db
 ```
 
 <a name="show-available-databases-on-the-mongodb-server"></a>
