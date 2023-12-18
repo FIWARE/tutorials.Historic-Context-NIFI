@@ -216,7 +216,8 @@ the repository:
 Where `<command>` will vary depending upon the databases we wish to activate. This command will also import seed data
 from the previous tutorials and provision the dummy IoT sensors on startup.
 
-> :information_source: **Note:** If you want to clean up and start over again you can do so with the following command:
+> [!NOTE]
+> If you want to clean up and start over again you can do so with the following command:
 >
 > ```console
 > ./services stop
@@ -690,7 +691,8 @@ The `postgres-db` container is driven by environment variables as shown:
 | POSTGRES_USER     | `postgres` | Username for the PostgreSQL database user |
 | POSTGRES_DB       | `postgres` | The name of the PostgreSQL database       |
 
-> :information_source: **Note:** Passing the Username and Password in plain text environment variables like this is a
+> [!NOTE]
+>  Passing the Username and Password in plain text environment variables like this is a
 > security risk. Whereas this is acceptable practice in a tutorial, for a production environment, you can avoid this
 > risk by applying [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
@@ -1102,7 +1104,8 @@ mysql-db:
         - 'MYSQL_ROOT_HOST=%'
 ```
 
-> :information_source: **Note:** Using the default `root` user and displaying the password in an environment variables
+> [!NOTE]
+> Using the default `root` user and displaying the password in an environment variables
 > like this is a security risk. Whereas this is acceptable practice in a tutorial, for a production environment, you can
 > avoid this risk by setting up another user and applying
 > [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
