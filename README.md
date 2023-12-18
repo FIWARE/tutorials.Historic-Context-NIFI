@@ -291,7 +291,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/nifi-api/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening
 on another port.
 
-#### :one: Request:
+#### 1️⃣ Request:
 
 ```console
 curl -X GET \
@@ -425,7 +425,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The notification `url` must match the configured `Base Path and Listening port` of the Draco Listen HTTP Processor
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :two: Request:
+#### 2️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -457,7 +457,7 @@ same for each database. The response will be **201 - Created**
 If a subscription has been created, you can check to see if it is firing by making a GET request to the
 `/v2/subscriptions` endpoint.
 
-#### :three: Request:
+#### 3️⃣ Request:
 
 ```console
 curl -X GET \
@@ -764,7 +764,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/nifi-api/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening
 on another port.
 
-#### :four: Request:
+#### 4️⃣ Request:
 
 ```console
 curl -X GET \
@@ -897,7 +897,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The `idPattern` in the request body ensures that Draco will be informed of all context data changes.
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :five: Request:
+#### 5️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -1187,7 +1187,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening on another
 port.
 
-#### :six: Request:
+#### 6️⃣ Request:
 
 ```console
 curl -X GET \
@@ -1268,7 +1268,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The `idPattern` in the request body ensures that Draco will be informed of all context data changes.
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :seven: Request:
+#### 7️⃣  Request:
 
 ```console
 curl -iX POST \
@@ -1508,7 +1508,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening on another
 port.
 
-#### :eight: Request:
+#### 8️⃣  Request:
 
 ```console
 curl -X GET \
@@ -1589,7 +1589,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The `idPattern` in the request body ensures that Draco will be informed of all context data changes.
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :nine: Request:
+#### 9️⃣ Request:
 
 ```console
 curl -iX POST \
