@@ -6,9 +6,8 @@
 
 This tutorial is an introduction to [FIWARE Draco](https://fiware-draco.readthedocs.io/en/latest/) - an alternative
 generic enabler which is used to persist context data into third-party databases using
-[Apache NIFI](https://nifi.apache.org) creating a historical view of the context. The in the same manner asthe
-[previous tutorial](https://github.com/FIWARE/tutorials.Historic-Context-NIFI), activates the dummy IoT sensors
-persists measurements from those sensors into a database for further analysis.
+[Apache NIFI](https://nifi.apache.org) creating a historical view of the context. The in the same manner as the previous tutorial, 
+we activate the dummy IoT sensors and persists measurements from those sensors into a database for further analysis.
 
 The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as
 [Postman documentation](https://www.postman.com/downloads/).
