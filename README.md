@@ -221,6 +221,7 @@ Where `<command>` will vary depending upon the databases we wish to activate. Th
 from the previous tutorials and provision the dummy IoT sensors on startup.
 
 > [!NOTE]
+>
 > If you want to clean up and start over again you can do so with the following command:
 >
 > ```console
@@ -696,9 +697,10 @@ The `postgres-db` container is driven by environment variables as shown:
 | POSTGRES_DB       | `postgres` | The name of the PostgreSQL database       |
 
 > [!NOTE]
->  Passing the Username and Password in plain text environment variables like this is a
-> security risk. Whereas this is acceptable practice in a tutorial, for a production environment, you can avoid this
-> risk by applying [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+>
+> Passing the Username and Password in plain text environment variables like this is a security risk. Whereas this is
+> acceptable practice in a tutorial, for a production environment, you can avoid this risk by applying
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 ## PostgreSQL - Draco Configuration
 
@@ -1109,10 +1111,10 @@ mysql-db:
 ```
 
 > [!NOTE]
-> Using the default `root` user and displaying the password in an environment variables
-> like this is a security risk. Whereas this is acceptable practice in a tutorial, for a production environment, you can
-> avoid this risk by setting up another user and applying
-> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+>
+> Using the default `root` user and displaying the password in an environment variables like this is a security risk.
+> Whereas this is acceptable practice in a tutorial, for a production environment, you can avoid this risk by setting up
+> another user and applying [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 The `mysql-db` container is listening on a single port:
 
@@ -1275,7 +1277,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The `idPattern` in the request body ensures that Draco will be informed of all context data changes.
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### 7️⃣  Request:
+#### 7️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -1515,7 +1517,7 @@ Once Draco is running, you can check the status by making an HTTP request to the
 `/system-diagnostics`. If the response is blank, this is usually because Draco is not running or is listening on another
 port.
 
-#### 8️⃣  Request:
+#### 8️⃣ Request:
 
 ```console
 curl -X GET \
