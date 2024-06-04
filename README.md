@@ -34,7 +34,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 -   [Architecture](#architecture)
 -   [Prerequisites](#prerequisites)
     -   [Docker and Docker Compose](#docker-and-docker-compose)
-    -   [Cygwin for Windows](#cygwin-for-windows)
+    -   [WSL](#wsl)
 -   [Start Up](#start-up)
 -   [MongoDB - Persisting Context Data into a Database](#mongodb---persisting-context-data-into-a-database)
     -   [MongoDB - Database Server Configuration](#mongodb---database-server-configuration)
@@ -191,10 +191,11 @@ docker version
 Please ensure that you are using Docker version 20.10 or higher and Docker Compose 1.29 or higher and upgrade if
 necessary.
 
-## Cygwin for Windows
+## WSL
 
-We will start up our services using a simple Bash script. Windows users should download [cygwin](http://www.cygwin.com/)
-to provide a command-line functionality similar to a Linux distribution on Windows.
+We will start up our services using a simple Bash script. Windows users should download the
+[Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install) to provide a command-line
+functionality similar to a Linux distribution on Windows.
 
 # Start Up
 

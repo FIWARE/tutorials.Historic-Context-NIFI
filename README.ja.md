@@ -32,7 +32,7 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 -   [アーキテクチャ](#architecture)
 -   [前提条件](#prerequisites)
     -   [Docker と Docker Compose](#docker-and-docker-compose)
-    -   [Cygwin for Windows](#cygwin-for-windows)
+    -   [WSL](#wsl)
 -   [起動](#start-up)
 -   [MongoDB - コンテキスト・データをデータベースに永続化](#mongodb---persisting-context-data-into-a-database)
     -   [MongoDB - データベース・サーバの設定](#mongodb---database-server-configuration)
@@ -197,11 +197,9 @@ docker version
 
 Docker バージョン 20.10 以降と Docker Compose 1.29 以上を使用していることを確認し、必要に応じてアップグレードしてください。
 
-<a name="cygwin-for-windows"></a>
+## WSL
 
-## Cygwin for Windows
-
-シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは [cygwin](http://www.cygwin.com/) をダウンロードして、
+シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは [を使用して Windows に Linux をインストールする方法](https://learn.microsoft.com/ja-jp/windows/wsl/install) をダウンロードして、
 Windows 上の Linux ディストリビューションと同様のコマンドライン機能を提供する必要があります。
 
 <a name="start-up"></a>
