@@ -106,7 +106,7 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 
 このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context Broker に接続されます。使用している
 アーキテクチャとプロトコルの詳細は、[IoT Sensors チュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)
-にあります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確認できます:
+にあります。各デバイスの状態は、次の JSON デバイス・モニタの Web ページで確認できます:
 `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-Flume/img/device-monitor.png)
@@ -118,7 +118,7 @@ IoT センサをアクティブにし、 それらのセンサからの測定値
 このアプリケーションは、[以前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Agent/)で作成したコンポーネントと
 ダミー IoT デバイスをベースにしています。3 つの FIWARE コンポーネントを使用します。
 [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
-[IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/),
+[IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/),
 コンテキスト・データをデータベースに永続化するための
 [Draco Generic Enabler](https://fiware-draco.readthedocs.io/en/latest/) を導入しました。
 Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の
@@ -130,8 +130,8 @@ Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.co
 -   3 つの **FIWARE Generic Enabler**:
     -   FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は、
         [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
-    -   FIWARE [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、
-        [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+    -   FIWARE [IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/) は、
+        [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの
         状態を変更するための [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
 -   FIWARE Draco はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **MongoDB**)
@@ -152,7 +152,7 @@ Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.co
         -   各店舗で購入できる商品を表示します
         -   ユーザが製品を購入して在庫数を減らすことを許可します
     -   HTTP 上で動作する
-        [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         プロトコルを使用して、[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)の
         セットとして機能する Web サーバ
     -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用しません。これは以下を行います:
@@ -595,7 +595,7 @@ show dbs
 
 ```
 admin          0.000GB
-iotagentul     0.000GB
+iotagentjson     0.000GB
 local          0.000GB
 orion          0.000GB
 orion-openiot  0.000GB
@@ -610,7 +610,7 @@ sth_openiot    0.000GB
 -   Store エンティティは `fiware-service`を定義せずに作成されたため
     `orion` データベース内に保持されますが、IoTデバイスのエンティティは
     `openiot` `fiware-service` ヘッダを使用して作成され別々に保持されます。
-    IoT Agent は IoT センサのデータを `iotagentul` と呼ばれる別の
+    IoT Agent は IoT センサのデータを `iotagentjson` と呼ばれる別の
     **MongoDB** データベースに保持するように初期化されました
 
 Draco を Orion Context Brokerにサブスクリプションした結果、`sth_openiot`
