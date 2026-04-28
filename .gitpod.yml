@@ -36,7 +36,7 @@ ports:
     onOpen: ignore
     visibility: public
   - name: IoT Agent (South Port)
-    description: Ultralight HTTP measures
+    description: JSON HTTP measures
     port: 7896
     onOpen: ignore
   - name: MongoDB
