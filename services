@@ -14,7 +14,7 @@
 # This will force the script to use docker-compose which may be more reliable in 
 # some cases (or if an older version of Docker is being used)
 
-set -e
+set -eo pipefail
 
 dockerCmd="docker compose"
 if (( $# == 2 )); then
@@ -46,9 +46,9 @@ loadData () {
 
 waitForDraco(){
 	echo -e "⏳ Waiting for Draco to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-draco` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-draco)" == "healthy" ]
 	do 
-	  echo -e "Draco HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics'` " (waiting for 200)"
+	  echo -e "Draco HTTP state: " $(curl -s -o /dev/null -w %{http_code} 'http://draco:9090/nifi-api/system-diagnostics') " (waiting for 200)"
 	  sleep 15
 	done
 	echo ""
@@ -57,7 +57,7 @@ waitForDraco(){
 
 waitForMongo () {
 	echo -e "\n⏳ Waiting for \033[1mMongoDB\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' db-mongo` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' db-mongo)" == "healthy" ]
 	do 
 		sleep 1
 	done
@@ -66,18 +66,18 @@ waitForMongo () {
 waitForOrion () {
 	echo -e "\n⏳ Waiting for \033[1;34mOrion\033[0m to be available\n"
 
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-orion` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-orion)" == "healthy" ]
 	do
-	  echo -e "Context Broker HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:1026/version'` " (waiting for 200)"
+	  echo -e "Context Broker HTTP state: " $(curl -s -o /dev/null -w %{http_code} 'http://localhost:1026/version') " (waiting for 200)"
 	  sleep 1
 	done
 }
 
 waitForIoTAgent () {
 	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while [ `curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version'` != "200" ]
+	while [ "$(curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version')" != "200" ]
 	do 
-	  echo -e "IoT Agent HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version'` " (waiting for 200)"
+	  echo -e "IoT Agent HTTP state: " $(curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version') " (waiting for 200)"
 	  sleep 1
 	done
 }
@@ -112,7 +112,7 @@ addDatabaseIndex () {
 
 
 stoppingContainers () {
-	export $(cat .env | grep "#" -v)
+	set -a; source .env; set +a
 	echo "Stopping running containers"
 	${dockerCmd} -f docker-compose/multiple.yml down -v --remove-orphans
 }
@@ -197,7 +197,7 @@ case "${command}" in
 		./services mongodb $2
 		;;
 	"create")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		echo "Pulling Docker images"
 		docker pull -q quay.io/curl/curl
 		${dockerCmd} -f docker-compose/multiple.yml  pull
